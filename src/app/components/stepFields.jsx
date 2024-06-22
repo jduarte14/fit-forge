@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ScrollView, View, TouchableOpacity, Text, Image, Modal, StyleSheet, Dimensions } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
 
@@ -9,6 +10,17 @@ const StepFields = ({ fields, actions }) => {
 
         return [primeraMitad, segundaMitad];
     }
+    const [selectedItem, setSelectedItem] = useState([]);
+
+    const handleSelectedItem = (item) => {
+        setSelectedItem(prevSelectedItem => {
+            if (prevSelectedItem.includes(item.name)) {
+                return prevSelectedItem.filter(name => name !== item.name);
+            } else {
+                return [...prevSelectedItem, item.name];
+            }
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -17,7 +29,7 @@ const StepFields = ({ fields, actions }) => {
                     fields.length > 0 ?
                         fields.map((item) => {
                             return (
-                                <TouchableOpacity style={styles.touchable} key={item.name}>
+                                <TouchableOpacity style={selectedItem.includes(item.name) ? styles.selected : styles.touchable} key={item.name} onPress={() => handleSelectedItem(item)}>
                                     <>
                                         {item.icon}
                                     </>
@@ -54,6 +66,20 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
+    },
+    selected: {
+        backgroundColor: backgroundSecondBase,
+        padding: 10,
+        width: screenWidth - 100,
+        borderWidth: 3,
+        borderColor: "#51565b",
+        borderRadius: 15,
+        margin: 10,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        borderColor:"white",
     },
     container: {
         flex: 1,

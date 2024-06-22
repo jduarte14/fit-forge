@@ -7,13 +7,31 @@ import StepFields from './../stepFields'
 const Login = () => {
     const [action, setAction] = useState("login");
     const [modal, setModal] = useState(true);
+    const [step, setStep] = useState(1);
     const [progress, setProgress] = useState({
-        firstbar: { progress: 0 },
-        secondbar: { progress: 0 },
-        thridbar: { progress: 0 },
+        1: 0,
+        2: 0,
+        3: 0,
     });
 
+    const handleStep = (direction) => {
+        setStep(prevStep => {
+            let newStep = prevStep;
+            if (direction === "next" && prevStep < 3) {
+                newStep = prevStep + 1;
+            } else if (direction === "back" && prevStep >= 1) {
+                newStep = prevStep - 1;
+            }
 
+            setProgress(prevProgress => ({
+                ...prevProgress,
+                [newStep]: newStep > 0 ? 1 : 0,
+                [prevStep]: newStep > prevStep ? 1 : 0
+            }));
+
+            return newStep;
+        });
+    };
 
     const sportData = {
         sports: [
@@ -104,7 +122,7 @@ const Login = () => {
                         <Text style={styles.centeredTitle}>
                             Choose your activities
                         </Text>
-                        <View style={{ height: 200, marginTop: '15%', }}>
+                        <View style={{ height: 400 }}>
                             {Object.keys(sportData).map((key, index) => (
                                 <StepFields key={key + '' + index} fields={sportData[key]} />
                             ))}
@@ -115,15 +133,15 @@ const Login = () => {
                                     <Progress.Bar progress={0} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
                                 }) : null
                             } */}
-                            <Progress.Bar progress={0} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
-                            <Progress.Bar progress={0} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
-                            <Progress.Bar progress={0} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
+                            <Progress.Bar progress={progress[1]} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
+                            <Progress.Bar progress={progress[2]} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
+                            <Progress.Bar progress={progress[3]} width={screenWidth / 4.7} height={10} borderColor='#2b2e37' color='#51565b' style={styles.progress} />
                         </View>
                         <View style={styles.navigationRow}>
-                            <TouchableOpacity style={styles.touchable}>
+                            <TouchableOpacity style={styles.touchable} onPress={() => { handleStep("back") }}>
                                 <MaterialIcons name="navigate-before" size={45} color="white" />
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.touchable}>
+                            <TouchableOpacity style={styles.touchable} onPress={() => { handleStep("next") }}>
                                 <MaterialIcons name="navigate-next" size={45} color="white" />
                             </TouchableOpacity>
                         </View>
@@ -160,7 +178,7 @@ const styles = StyleSheet.create({
         backgroundColor: backgroundBase,
         height: screenHeight,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-around",
     },
     logo: {
         color: "white",
