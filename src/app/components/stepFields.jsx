@@ -4,7 +4,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -16,18 +16,33 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const StepFields = ({ fields, tag }) => {
+const StepFields = ({ fields, tag, fieldName }) => {
+  const [currentData, setCurrentData] = useState({
+    sports: {},
+    facilities: {},
+    schedules: {},
+    prices: {},
+    gallery: {},
+  });
   const [selectedItem, setSelectedItem] = useState([]);
   const [images, setImages] = useState([]);
+
   const handleSelectedItem = (item) => {
+    let itemData = [];
     setSelectedItem((prevSelectedItem) => {
       if (prevSelectedItem.includes(item.name)) {
         return prevSelectedItem.filter((name) => name !== item.name);
       } else {
-        return [...prevSelectedItem, item.name];
+        itemData = [...prevSelectedItem, item.name];
+        setCurrentData((prevData) => ({
+          ...prevData,
+          [fieldName]: itemData,
+        }));
+        return itemData;
       }
     });
   };
@@ -42,7 +57,15 @@ const StepFields = ({ fields, tag }) => {
       });
 
       if (!result.canceled) {
-        setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+        const newImageUri = result.assets[0].uri;
+        setImages((prevImages) => {
+          const updatedImages = [...prevImages, newImageUri];
+          setCurrentData((prevData) => ({
+            ...prevData,
+          [fieldName]: updatedImages,
+          }));
+          return updatedImages;
+        });
       }
     } catch (error) {
       console.error(error);
@@ -53,10 +76,13 @@ const StepFields = ({ fields, tag }) => {
     setImages((prevImages) => {
       const newImages = [...prevImages];
       newImages.splice(index, 1);
+      setCurrentData((prevData) => ({
+        ...prevData,
+        gallery: newImages,
+      }));
       return newImages;
     });
   };
-
   return (
     <View style={styles.container}>
       {fields ? (
@@ -113,6 +139,15 @@ const StepFields = ({ fields, tag }) => {
             <Text style={styles.inputText}>Opening hours:</Text>
             <TextInput
               style={styles.textInput}
+              onChangeText={(text) => {
+                setCurrentData((prevData) => ({
+                  ...prevData,
+                  schedules: {
+                    ...prevData.schedules,
+                    startHours: text,
+                  },
+                }));
+              }}
               placeholder="example 8:30"
               placeholderTextColor="white"
             />
@@ -122,6 +157,15 @@ const StepFields = ({ fields, tag }) => {
             <Text style={styles.inputText}>Closing hours:</Text>
             <TextInput
               style={styles.textInput}
+              onChangeText={(text) => {
+                setCurrentData((prevData) => ({
+                  ...prevData,
+                  schedules: {
+                    ...prevData.schedules,
+                    endHours: text,
+                  },
+                }));
+              }}
               placeholder="example 22:00"
               placeholderTextColor="white"
             />
@@ -152,12 +196,31 @@ const StepFields = ({ fields, tag }) => {
           {Object.keys(fields).map((key) => {
             return (
               <View style={styles.numberInput} key={key}>
-                <MaterialIcons name="attach-money" size={30} color="white" style={{backgroundColor:"#facc15", borderRadius: 100, marginRight: 10,}} />
+                <MaterialIcons
+                  name="attach-money"
+                  size={30}
+                  color="white"
+                  style={{
+                    backgroundColor: "#facc15",
+                    borderRadius: 100,
+                    marginRight: 10,
+                  }}
+                />
                 <TextInput
                   placeholder={key.toLowerCase()}
                   placeholderTextColor="white"
-                  onChange={(value) => key[value]}
-                  style={{fontSize: 18}}
+                  keyboardType="numeric"
+                  color="white"
+                  onChangeText={(value) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData,
+                      prices: {
+                        ...prevData.prices,
+                        [key]: value,
+                      },
+                    }));
+                  }}
+                  style={{ fontSize: 18 }}
                 />
               </View>
             );
@@ -167,41 +230,39 @@ const StepFields = ({ fields, tag }) => {
       {tag == "gallery_form" ? (
         <View style={styles.galleryContainer}>
           <View style={styles.previewImageContainer}>
-            {
-              <ScrollView horizontal>
-                {images.length > 0 ? (
-                  images.map((image, index) => {
-                    return image ? (
-                      <View
-                        style={{ position: "relative" }}
-                        key={"image_" + index}
+            <ScrollView horizontal>
+              {images.length > 0 ? (
+                images.map((image, index) => {
+                  return image ? (
+                    <View
+                      style={{ position: "relative" }}
+                      key={"image_" + index}
+                    >
+                      <TouchableOpacity
+                        style={styles.deleteImage}
+                        onPress={() => deleteImage(index)}
                       >
-                        <TouchableOpacity
-                          style={styles.deleteImage}
-                          onPress={(index) => deleteImage(index)}
-                        >
-                          <AntDesign name="close" size={20} color="white" />
-                        </TouchableOpacity>
-                        <Image
-                          source={{ uri: image }}
-                          style={styles.previewImage}
-                          key={image}
-                        />
-                      </View>
-                    ) : null;
-                  })
-                ) : (
-                  <>
-                    <TouchableOpacity style={styles.touchable}>
-                      <FontAwesome5 name="image" size={70} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchable}>
-                      <FontAwesome5 name="image" size={70} color="white" />
-                    </TouchableOpacity>
-                  </>
-                )}
-              </ScrollView>
-            }
+                        <AntDesign name="close" size={20} color="white" />
+                      </TouchableOpacity>
+                      <Image
+                        source={{ uri: image }}
+                        style={styles.previewImage}
+                        key={image}
+                      />
+                    </View>
+                  ) : null;
+                })
+              ) : (
+                <>
+                  <TouchableOpacity style={styles.touchable}>
+                    <FontAwesome5 name="image" size={70} color="white" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.touchable}>
+                    <FontAwesome5 name="image" size={70} color="white" />
+                  </TouchableOpacity>
+                </>
+              )}
+            </ScrollView>
           </View>
           <TouchableOpacity style={styles.touchable} onPress={pickImage}>
             <View style={styles.row}>
@@ -216,14 +277,24 @@ const StepFields = ({ fields, tag }) => {
           </TouchableOpacity>
         </View>
       ) : null}
+      {tag == "confirmForm" ? (
+        <View style={styles.container}>
+          <Text style={styles.text}>
+            Please confirm the information you have provided:
+          </Text>
+          <Text style={styles.text}>
+            {JSON.stringify(currentData, null, 2)}
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 };
 
 export default StepFields;
 
-let backgroundBase = "#1c2229";
-let backgroundSecondBase = "#2b2e37";
+const backgroundBase = "#1c2229";
+const backgroundSecondBase = "#2b2e37";
 
 const styles = StyleSheet.create({
   container: {
@@ -258,14 +329,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     borderColor: "white",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: backgroundBase,
-    width: screenWidth,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
   },
   text: {
     color: "white",
@@ -307,7 +370,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: "#51565b",
     width: screenWidth - 220,
     color: "white",
   },
@@ -335,11 +397,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 2,
-  },
-  previewButton: {
-    position: "absolute",
-    top: 0,
-    right: 0,
   },
   deleteImage: {
     position: "absolute",

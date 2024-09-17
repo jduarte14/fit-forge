@@ -1,30 +1,9 @@
-import {
-  FontAwesome6,
-  FontAwesome5,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  Dimensions,
-  Pressable,
-  Modal,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image} from "react-native";
 import StepFields from "./../stepFields";
-import {
-  sportData,
-  facilitiesData,
-  schedulesData,
-  pricesData,
-  galleryData,
-} from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm} from "./../../../data/gymData";
 
 const Login = () => {
   const [action, setAction] = useState("login");
@@ -60,19 +39,19 @@ const Login = () => {
   const getStepData = () => {
     switch (step) {
       case 0:
-        return { tag: sportData.tag, fields: sportData.items };
+        return { tag: sportData.tag, fields: sportData.items, name: sportData.name };
       case 1:
-        return { tag: facilitiesData.tag, fields: facilitiesData.items };
+        return { tag: facilitiesData.tag, fields: facilitiesData.items, name: facilitiesData.name };
       case 2:
-        return { tag: schedulesData.tag, fields: schedulesData.items };
+        return { tag: schedulesData.tag, fields: schedulesData.items, name: schedulesData.name };
       case 3:
-        return { tag: pricesData.tag, fields: pricesData.items };
+        return { tag: pricesData.tag, fields: pricesData.items, name: pricesData.name };
       case 4:
-        return { tag: galleryData.tag, fields: galleryData.items };
+        return { tag: galleryData.tag, fields: galleryData.items, name: galleryData.name };
       case 5:
-        return { tag: pricesData.tag, fields: pricesData.items };
+        return { tag: infoForm.tag, fields: infoForm.items, name: infoForm.name };
       default:
-        return { tag: sportData.tag, fields: sportData.items };
+        return { tag: sportData.tag, fields: sportData.items, name: sportData.name };
     }
   };
 
@@ -92,6 +71,8 @@ const Login = () => {
         return setAction("gallery_form");
       case "prices_form":
         return setAction("prices_form");
+      case "info_form":
+        return setAction("info_form");
       default:
         return setStep(0);
     }
@@ -150,6 +131,7 @@ const Login = () => {
                 <StepFields
                   tag={getStepData().tag}
                   fields={getStepData().fields}
+                  fieldName={getStepData().name}
                 />
               }
             </View>
