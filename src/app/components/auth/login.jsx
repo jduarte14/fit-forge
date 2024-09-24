@@ -1,14 +1,15 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Close } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
-import { useState } from "react";
-import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image} from "react-native";
+import { useState, useEffect } from "react";
+import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image } from "react-native";
 import StepFields from "./../stepFields";
-import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm} from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData } from "./../../../data/gymData";
 
 const Login = () => {
-  const [action, setAction] = useState("login");
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const [step, setStep] = useState(0);
+  const [typeAuth, setTypeAuth] = useState({});
+  const [authSettings, setAuthSettings] = useState({});
   const [progress, setProgress] = useState({
     1: 0,
     2: 0,
@@ -16,6 +17,35 @@ const Login = () => {
     4: 0,
     5: 0,
   });
+
+
+  // This funciton handles the type of user on the authentication process
+  const handleAutenticationSettings = (type) => {
+    let typeData;
+    if (type == "userRegister") {
+      typeData = { userData, galleryData };
+    }
+    if (type == "ownerRegister") {
+      typeData = {
+        sportData,
+        facilitiesData,
+        schedulesData,
+        pricesData,
+        galleryData,
+        infoForm
+      }
+    }
+    if (type == "instructorRegister") {
+      typeData = {
+        userData,
+        galleryData,
+        sportData,
+        infoForm,
+      }
+    }
+    setAuthSettings(typeData);
+  }
+
 
   const handleStep = (direction) => {
     setStep((prevStep) => {
@@ -37,48 +67,26 @@ const Login = () => {
   };
 
   const getStepData = () => {
-    switch (step) {
-      case 0:
-        return { tag: sportData.tag, fields: sportData.items, name: sportData.name };
-      case 1:
-        return { tag: facilitiesData.tag, fields: facilitiesData.items, name: facilitiesData.name };
-      case 2:
-        return { tag: schedulesData.tag, fields: schedulesData.items, name: schedulesData.name };
-      case 3:
-        return { tag: pricesData.tag, fields: pricesData.items, name: pricesData.name };
-      case 4:
-        return { tag: galleryData.tag, fields: galleryData.items, name: galleryData.name };
-      case 5:
-        return { tag: infoForm.tag, fields: infoForm.items, name: infoForm.name };
-      default:
-        return { tag: sportData.tag, fields: sportData.items, name: sportData.name };
+    const authKeys = Object.keys(authSettings);
+    if (authKeys[step]) {
+      const stepKey = authKeys[step];
+      const stepData = authSettings[stepKey];
+      return {
+        tag: stepData.tag,
+        fields: stepData.items,
+        name: stepData.name,
+      };
     }
+    return { tag: "", fields: [], name: "" };
   };
 
-  const handleActions = () => {
-    switch (action) {
-      case "userRegister":
-        return "";
-      case "instructorLogin":
-        return setAction("instructorLogin");
-      case "instructorRegister":
-        return setAction("instructorRegister");
-      case "ownerLogin":
-        return setAction("ownerLogin");
-      case "ownerRegister":
-        return setAction("ownerRegister");
-      case "gallery_form":
-        return setAction("gallery_form");
-      case "prices_form":
-        return setAction("prices_form");
-      case "info_form":
-        return setAction("info_form");
-      default:
-        return setStep(0);
+  const handleAuth = async (action) => {
+    setTypeAuth(action);
+    if (action != "userRegister") {
+      setModal(true);
     }
+    handleAutenticationSettings(action);
   };
-
-  const handleAuth = async (action) => {};
 
   return (
     <View style={styles.container}>
@@ -105,71 +113,76 @@ const Login = () => {
         <View style={styles.buttonRow}>
           <Pressable style={styles.button}>
             <Text style={styles.buttonText}>
-              {action === "login" ? "Login" : "Register"}
+              Login
             </Text>
           </Pressable>
         </View>
-        <Text style={styles.infoText}>You don't have an account? Register</Text>
+        <Text style={styles.infoText} onPress={() => { handleAuth("userRegister") }}>You don't have an account? Register</Text>
         <View style={styles.buttonWrap}>
-          <Pressable style={styles.buttonWrapped}>
-            <Text style={styles.buttonText}>I'm an instructor</Text>
+          <Pressable style={styles.buttonWrapped} onPress={() => { handleAuth("instructorRegister") }}>
+            <Text style={styles.buttonText}>Register as an instructor</Text>
           </Pressable>
           <Pressable
             style={styles.buttonWrapped}
-            onPress={() => handleActions("ownerRegister")}
+            onPress={() => handleAuth("ownerRegister")}
           >
-            <Text style={styles.buttonText}>I'm a gym owner</Text>
+            <Text style={styles.buttonText}>Register your gym</Text>
           </Pressable>
         </View>
       </View>
-      {modal && (
-        <Modal animationType="slide" visible={modal}>
-          <View style={styles.modal}>
-            <Text style={styles.centeredTitle}>Choose your activities</Text>
-            <View style={{ height: 400 }}>
-              {
-                <StepFields
-                  tag={getStepData().tag}
-                  fields={getStepData().fields}
-                  fieldName={getStepData().name}
-                />
-              }
+      {
+        modal && (
+          <Modal animationType="slide" visible={modal}>
+            <View style={styles.modal}>
+              <Pressable style={styles.close} onPress={() => setModal(false)}>
+                <MaterialIcons name="close" color="white" style={{ fontSize: 30 }} />
+              </Pressable>
+              <Text style={styles.centeredTitle}>Choose your activities</Text>
+              <View style={{ height: 400 }}>
+                {
+                  <StepFields
+                    tag={getStepData().tag}
+                    fields={getStepData().fields}
+                    fieldName={getStepData().name}
+                  />
+                }
+              </View>
+              <View style={styles.row}>
+                {Object.keys(progress).map((key) => (
+                  <Progress.Bar
+                    key={key}
+                    progress={progress[key.items]}
+                    width={screenWidth / 10}
+                    height={10}
+                    borderColor="#2b2e37"
+                    color="#51565b"
+                    style={styles.progress}
+                  />
+                ))}
+              </View>
+              <View style={styles.navigationRow}>
+                <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={() => {
+                    handleStep("back");
+                  }}
+                >
+                  <MaterialIcons name="navigate-before" size={45} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.touchable}
+                  onPress={() => {
+                    handleStep("next");
+                  }}
+                >
+                  <MaterialIcons name="navigate-next" size={45} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.row}>
-              {Object.keys(progress).map((key) => (
-                <Progress.Bar
-                  key={key}
-                  progress={progress[key.items]}
-                  width={screenWidth / 10}
-                  height={10}
-                  borderColor="#2b2e37"
-                  color="#51565b"
-                  style={styles.progress}
-                />
-              ))}
-            </View>
-            <View style={styles.navigationRow}>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => {
-                  handleStep("back");
-                }}
-              >
-                <MaterialIcons name="navigate-before" size={45} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => {
-                  handleStep("next");
-                }}
-              >
-                <MaterialIcons name="navigate-next" size={45} color="white" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
-    </View>
+          </Modal>
+        )
+      }
+    </View >
   );
 };
 
@@ -215,7 +228,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     color: "white",
-    fontSize: 30,
+    fontSize: 25,
+  },
+  close: {
+    backgroundColor: backgroundSecondBase,
+    position: 'absolute',
+    right: 0,
+    marginRight: 10,
+    borderRadius: 20,
+    padding: 5,
   },
   form: {
     paddingTop: 10,
@@ -284,6 +305,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     fontWeight: "bold",
+    fontSize: 13,
   },
   text: {
     color: "white",

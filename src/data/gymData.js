@@ -107,6 +107,8 @@ export const facilitiesData = {
   },
 };
 
+
+
 export const schedulesData = {
   tag: "schedules_form",
   name: "schedules",
@@ -148,3 +150,14 @@ export const infoForm = {
   tag: "info_form",
   items: {},
 };
+
+
+export const userData = {
+  tag:"user_data",
+  items: {
+    username: "",
+    password: "",
+    email: "",
+    phone: "",
+  }
+}
