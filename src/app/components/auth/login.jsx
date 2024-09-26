@@ -5,8 +5,9 @@ import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, Toucha
 import StepFields from "./../stepFields";
 import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, avatarData } from "./../../../data/gymData";
 
-const Login = () => {
+const Login = ({setUserLogged}) => {
   const [modal, setModal] = useState(false);
+  const [logged, setLogin] = useState(false);
   const [step, setStep] = useState(0);
   const [authStructure, setAuthStructure] = useState([]);
   const [typeAuth, setTypeAuth] = useState({});
@@ -82,9 +83,7 @@ const Login = () => {
 
   const handleAuth = async (action) => {
     setTypeAuth(action);
-    if (action != "userRegister") {
-      setModal(true);
-    }
+    setModal(true);
     handleAutenticationSettings(action);
   };
 
@@ -104,6 +103,11 @@ const Login = () => {
     setAuthStructure(structureObject);
   }
 
+  const logUser =()=>{
+    setModal(false)
+    setUserLogged(true);
+  }
+
   useEffect(() => {
     const authKeys = Object.keys(authSettings);
     const keyNames = [];
@@ -112,6 +116,7 @@ const Login = () => {
     });
     setIntialData(keyNames);
   }, [authSettings])
+
 
   return (
     <View style={styles.container}>
@@ -124,7 +129,6 @@ const Login = () => {
           placeholder="Email"
           onChangeText=""
           placeholderTextColor="white"
-          value=""
           style={styles.input}
         />
         <TextInput
@@ -132,7 +136,6 @@ const Login = () => {
           placeholderTextColor="white"
           secureTextEntry
           onChangeText=""
-          value=""
           style={styles.input}
         />
         <View style={styles.buttonRow}>
@@ -170,6 +173,8 @@ const Login = () => {
                     fields={getStepData().fields}
                     fieldName={getStepData().name}
                     structure={authStructure}
+                    action={typeAuth}
+                    logUser={logUser}
                   />
                 }
               </View>

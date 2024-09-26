@@ -20,7 +20,7 @@ import {
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const StepFields = ({ fields, tag, fieldName, structure }) => {
+const StepFields = ({ fields, tag, fieldName, structure, action, logUser }) => {
   const [currentData, setCurrentData] = useState(structure);
   const [selectedItem, setSelectedItem] = useState([]);
   const [images, setImages] = useState([]);
@@ -286,9 +286,6 @@ const StepFields = ({ fields, tag, fieldName, structure }) => {
           <>
             <View style={styles.galleryContainer}>
               <TouchableOpacity onPress={pickImage} style={styles.previewAvatar}>
-
-
-
                 {
                   images[0] ? (<>
                     <Image
@@ -321,8 +318,8 @@ const StepFields = ({ fields, tag, fieldName, structure }) => {
                 onChangeText={(value) => {
                   setCurrentData((prevData) => ({
                     ...prevData,
-                    prices: {
-                      ...prevData.credentials,
+                    credentials: {
+                      ...prevData.name,
                       name: value,
                     },
                   }));
@@ -333,14 +330,13 @@ const StepFields = ({ fields, tag, fieldName, structure }) => {
                 onChangeText={(value) => {
                   setCurrentData((prevData) => ({
                     ...prevData,
-                    prices: {
-                      ...prevData.credentials,
+                    credentials: {
+                      ...prevData.username,
                       username: value,
                     },
                   }));
                 }}
                 placeholderTextColor="white"
-                value=""
                 style={styles.input}
               />
               <TextInput
@@ -348,14 +344,13 @@ const StepFields = ({ fields, tag, fieldName, structure }) => {
                 onChangeText={(value) => {
                   setCurrentData((prevData) => ({
                     ...prevData,
-                    prices: {
-                      ...prevData.credentials,
+                    credentials: {
+                      ...prevData.email,
                       email: value,
                     },
                   }));
                 }}
                 placeholderTextColor="white"
-                value=""
                 style={styles.input}
               />
               <TextInput
@@ -365,19 +360,20 @@ const StepFields = ({ fields, tag, fieldName, structure }) => {
                 onChangeText={(value) => {
                   setCurrentData((prevData) => ({
                     ...prevData,
-                    prices: {
-                      ...prevData.credentials,
+                    credentials: {
+                      ...prevData.password,
                       password: value,
                     },
                   }));
                 }}
-                value=""
                 style={styles.input}
               />
               <View style={styles.buttonRow}>
-                <Pressable style={styles.button}>
+                <Pressable style={styles.button} onPress={()=> logUser()}>
                   <Text style={styles.buttonText}>
-                    Login
+                    {
+                      action == "userRegister" ? "Register" : "Confirm"
+                    }
                   </Text>
                 </Pressable>
               </View>

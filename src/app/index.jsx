@@ -6,7 +6,7 @@ import BottomBar from './components/layout/BottomBar';
 const Index = () => {
   const [userLogged, setUserLogged] = useState(false);
   const getUserLogged = () => {
-    setUserLogged(false);
+    setUserLogged(true);
   }
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const Index = () => {
     <View style={styles.container}>
       <ScrollView>
         {
-          userLogged ? <HomeView /> : <Login />
+          userLogged ? <HomeView /> : <Login setUserLogged={setUserLogged}/>
         }
       </ScrollView>
       {
