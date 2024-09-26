@@ -146,18 +146,25 @@ export const galleryData = {
   items: [],
 };
 
+export const avatarData = {
+  tag: "avatar_form",
+  name: "avatar",
+  items: [],
+};
+
 export const infoForm = {
   tag: "info_form",
+  name:"info",
   items: {},
 };
 
 
 export const userData = {
   tag:"user_data",
+  name:"credentials",
   items: {
     username: "",
     password: "",
     email: "",
-    phone: "",
   }
 }

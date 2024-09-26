@@ -12,22 +12,16 @@ import {
   Text,
   Image,
   TextInput,
-  Modal,
   StyleSheet,
   Dimensions,
+  Pressable,
 } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const StepFields = ({ fields, tag, fieldName }) => {
-  const [currentData, setCurrentData] = useState({
-    sports: {},
-    facilities: {},
-    schedules: {},
-    prices: {},
-    gallery: {},
-  });
+const StepFields = ({ fields, tag, fieldName, structure }) => {
+  const [currentData, setCurrentData] = useState(structure);
   const [selectedItem, setSelectedItem] = useState([]);
   const [images, setImages] = useState([]);
 
@@ -62,7 +56,7 @@ const StepFields = ({ fields, tag, fieldName }) => {
           const updatedImages = [...prevImages, newImageUri];
           setCurrentData((prevData) => ({
             ...prevData,
-          [fieldName]: updatedImages,
+            [fieldName]: updatedImages,
           }));
           return updatedImages;
         });
@@ -89,23 +83,23 @@ const StepFields = ({ fields, tag, fieldName }) => {
         <ScrollView horizontal>
           {tag == "double_row" && fields["first_row"]
             ? fields["first_row"].map((item) => {
-                return (
-                  <TouchableOpacity
-                    style={
-                      selectedItem.includes(item.name)
-                        ? styles.selected
-                        : styles.touchable
-                    }
-                    key={item.name}
-                    onPress={() => handleSelectedItem(item)}
-                  >
-                    <>{item.icon}</>
-                    <Text style={styles.text} key={item}>
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })
+              return (
+                <TouchableOpacity
+                  style={
+                    selectedItem.includes(item.name)
+                      ? styles.selected
+                      : styles.touchable
+                  }
+                  key={item.name}
+                  onPress={() => handleSelectedItem(item)}
+                >
+                  <>{item.icon}</>
+                  <Text style={styles.text} key={item}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })
             : null}
         </ScrollView>
       ) : null}
@@ -113,23 +107,23 @@ const StepFields = ({ fields, tag, fieldName }) => {
         <ScrollView horizontal>
           {tag == "double_row" && fields["second_row"]
             ? fields["second_row"].map((item) => {
-                return (
-                  <TouchableOpacity
-                    style={
-                      selectedItem.includes(item.name)
-                        ? styles.selected
-                        : styles.touchable
-                    }
-                    key={item.name}
-                    onPress={() => handleSelectedItem(item)}
-                  >
-                    <>{item.icon}</>
-                    <Text style={styles.text} key={item}>
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })
+              return (
+                <TouchableOpacity
+                  style={
+                    selectedItem.includes(item.name)
+                      ? styles.selected
+                      : styles.touchable
+                  }
+                  key={item.name}
+                  onPress={() => handleSelectedItem(item)}
+                >
+                  <>{item.icon}</>
+                  <Text style={styles.text} key={item}>
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })
             : null}
         </ScrollView>
       ) : null}
@@ -287,7 +281,111 @@ const StepFields = ({ fields, tag, fieldName }) => {
           </Text>
         </View>
       ) : null}
-    </View>
+      {
+        tag == "user_data" ? (
+          <>
+            <View style={styles.galleryContainer}>
+              <TouchableOpacity onPress={pickImage} style={styles.previewAvatar}>
+
+
+
+                {
+                  images[0] ? (<>
+                    <Image
+                      source={{ uri: images[0] }}
+                      style={styles.avatar}
+                    />
+                    <TouchableOpacity
+                      style={styles.deleteImage}
+                      onPress={() => deleteImage(index)}
+                    >
+                      <AntDesign name="close" size={20} color="white" />
+                    </TouchableOpacity>
+                  </>
+                  ) : (
+                    <>
+                      <AntDesign name="user" size={55} color="white" />
+                      <View styles={{ position: 'absolute', right: 10 }}>
+                        <FontAwesome6 name="add" size={24} color="white" />
+                      </View>
+                    </>
+                  )
+                }
+              </TouchableOpacity>
+            </View>
+            <View style={styles.form}>
+              <TextInput
+                placeholder="Name"
+                placeholderTextColor="white"
+                style={styles.input}
+                onChangeText={(value) => {
+                  setCurrentData((prevData) => ({
+                    ...prevData,
+                    prices: {
+                      ...prevData.credentials,
+                      name: value,
+                    },
+                  }));
+                }}
+              />
+              <TextInput
+                placeholder="Username"
+                onChangeText={(value) => {
+                  setCurrentData((prevData) => ({
+                    ...prevData,
+                    prices: {
+                      ...prevData.credentials,
+                      username: value,
+                    },
+                  }));
+                }}
+                placeholderTextColor="white"
+                value=""
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Email"
+                onChangeText={(value) => {
+                  setCurrentData((prevData) => ({
+                    ...prevData,
+                    prices: {
+                      ...prevData.credentials,
+                      email: value,
+                    },
+                  }));
+                }}
+                placeholderTextColor="white"
+                value=""
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor="white"
+                secureTextEntry
+                onChangeText={(value) => {
+                  setCurrentData((prevData) => ({
+                    ...prevData,
+                    prices: {
+                      ...prevData.credentials,
+                      password: value,
+                    },
+                  }));
+                }}
+                value=""
+                style={styles.input}
+              />
+              <View style={styles.buttonRow}>
+                <Pressable style={styles.button}>
+                  <Text style={styles.buttonText}>
+                    Login
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </>
+        ) : null
+      }
+    </View >
   );
 };
 
@@ -301,7 +399,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   form: {
-    marginBottom: 50,
+    marginTop: 50,
   },
   touchable: {
     backgroundColor: backgroundSecondBase,
@@ -315,6 +413,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+  },
+  previewAvatar: {
+    backgroundColor: backgroundSecondBase,
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: 100,
+    marginBottom: 20,
+    height: 100,
+    width: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   selected: {
     backgroundColor: backgroundSecondBase,
@@ -334,6 +445,45 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     textAlign: "center",
+  },
+  input: {
+    width: screenWidth - 30,
+    height: 50,
+    borderWidth: 2,
+    borderColor: backgroundSecondBase,
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    paddingLeft: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+  button: {
+    backgroundColor: "#2b2e37",
+    borderWidth: 2,
+    borderColor: backgroundSecondBase,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 25,
+    width: screenWidth - 50,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+  buttonRow: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: backgroundBase
   },
   inputText: {
     color: "white",

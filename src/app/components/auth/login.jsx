@@ -3,11 +3,12 @@ import * as Progress from "react-native-progress";
 import { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image } from "react-native";
 import StepFields from "./../stepFields";
-import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData } from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, avatarData } from "./../../../data/gymData";
 
 const Login = () => {
   const [modal, setModal] = useState(false);
   const [step, setStep] = useState(0);
+  const [authStructure, setAuthStructure] = useState([]);
   const [typeAuth, setTypeAuth] = useState({});
   const [authSettings, setAuthSettings] = useState({});
   const [progress, setProgress] = useState({
@@ -23,10 +24,11 @@ const Login = () => {
   const handleAutenticationSettings = (type) => {
     let typeData;
     if (type == "userRegister") {
-      typeData = { userData, galleryData };
+      typeData = { userData };
     }
     if (type == "ownerRegister") {
       typeData = {
+        userData,
         sportData,
         facilitiesData,
         schedulesData,
@@ -38,7 +40,6 @@ const Login = () => {
     if (type == "instructorRegister") {
       typeData = {
         userData,
-        galleryData,
         sportData,
         infoForm,
       }
@@ -77,7 +78,6 @@ const Login = () => {
         name: stepData.name,
       };
     }
-    return { tag: "", fields: [], name: "" };
   };
 
   const handleAuth = async (action) => {
@@ -87,6 +87,31 @@ const Login = () => {
     }
     handleAutenticationSettings(action);
   };
+
+  const handleModal = () => {
+    if (modal) {
+      setAuthSettings({});
+      setModal(false);
+    } else {
+      setModal(true);
+    }
+  }
+  const setIntialData =(structure)=>{
+    let structureObject = {};
+    structure.forEach(key => {
+      structureObject[key] = {};
+    })
+    setAuthStructure(structureObject);
+  }
+
+  useEffect(() => {
+    const authKeys = Object.keys(authSettings);
+    const keyNames = [];
+    authKeys.forEach(key => {
+      keyNames.push(authSettings[key].name);
+    });
+    setIntialData(keyNames);
+  }, [authSettings])
 
   return (
     <View style={styles.container}>
@@ -134,7 +159,7 @@ const Login = () => {
         modal && (
           <Modal animationType="slide" visible={modal}>
             <View style={styles.modal}>
-              <Pressable style={styles.close} onPress={() => setModal(false)}>
+              <Pressable style={styles.close} onPress={() => handleModal()}>
                 <MaterialIcons name="close" color="white" style={{ fontSize: 30 }} />
               </Pressable>
               <Text style={styles.centeredTitle}>Choose your activities</Text>
@@ -144,6 +169,7 @@ const Login = () => {
                     tag={getStepData().tag}
                     fields={getStepData().fields}
                     fieldName={getStepData().name}
+                    structure={authStructure}
                   />
                 }
               </View>
@@ -252,6 +278,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontWeight: "bold",
     color: "white",
+    marginHorizontal: "auto",
   },
   buttonRow: {
     display: "flex",
