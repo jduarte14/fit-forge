@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 const Bottombar = () => {
     return (
         <View style={styles.row}>
@@ -20,6 +21,15 @@ const Bottombar = () => {
                     <View style={styles.btn}>
                         <FontAwesome name="tasks" size={24} color="white" />
                         <Text style={styles.text}>Instructors</Text>
+                    </View>
+
+                </Link>
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Link href="/profile" style={styles.btn}>
+                    <View style={styles.btn}>
+                        <FontAwesome name="map-pin" size={24} color="white" />
+                        <Text style={styles.text}>Gym map</Text>
                     </View>
 
                 </Link>

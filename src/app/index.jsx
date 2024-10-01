@@ -4,15 +4,10 @@ import HomeView from "./home";
 import Login from './components/auth/login';
 import BottomBar from './components/layout/BottomBar';
 const Index = () => {
-  const [userLogged, setUserLogged] = useState(false);
+  const [userLogged, setUserLogged] = useState(true);
   const getUserLogged = () => {
     setUserLogged(true);
   }
-
-  useEffect(() => {
-    getUserLogged();
-  })
-
 
   return (
     <View style={styles.container}>
