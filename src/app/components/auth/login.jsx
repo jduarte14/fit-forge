@@ -6,8 +6,8 @@ import StepFields from "./../stepFields";
 import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, avatarData } from "./../../../data/gymData";
 import { useUser } from "../../contexts/user/UserContext.jsx"
 
-const Login = ({setUserLogged}) => {
-  const { createUser } = useUser();
+const Login = ({ setUserLogged }) => {
+  const { createUser, user } = useUser();
 
   const [modal, setModal] = useState(false);
   const [logged, setLogin] = useState(false);
@@ -100,22 +100,25 @@ const Login = ({setUserLogged}) => {
       setModal(true);
     }
   }
-  const setIntialData =(structure)=>{
+  const setIntialData = (structure) => {
     let structureObject = {};
     structure.forEach(key => {
       structureObject[key] = {};
     })
     setAuthStructure(structureObject);
   }
-  const handleAuthenticationResult = async (data)=>{
+  const handleAuthenticationResult = async (data) => {
     const response = createUser(data);
-
   }
-  const logUser =()=>{
-    setModal(false)
-    setUserLogged(true);
+  const logUser = () => {
+    if (user) {
+      setModal(false)
+      setUserLogged(true);
+    }
   }
-
+  useEffect(() => {
+    logUser();
+  }, [user])
   useEffect(() => {
     const authKeys = Object.keys(authSettings);
     const keyNames = [];

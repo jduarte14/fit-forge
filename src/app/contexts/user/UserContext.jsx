@@ -14,12 +14,14 @@ export const UserProvider = ({ children }) => {
     formData.append("password", newUser.credentials.password);
     formData.append("avatar", { uri:newUser.credentials.avatar, type:'image/jpeg', name:'avatar.jpg' });
     formData.append("username", newUser.credentials.username);
-    console.log(formData, "form_data");
     
     const response = await handleUser("POST", formData, "/auth/user" ); 
-    
-    console.log(response, "<=== data");
-    
+    console.log(response, "en el state");
+    if(response.status) {
+      console.log(response.user);
+      setUser(response.user);
+    }
+    return response;
     }
     catch(error) {
       console.error(error.message);

@@ -9,7 +9,6 @@ export const handleUser = async (method, data, params)=>{
 
         if(response.status == 200) {
             const data = response.json();
-            console.log(data, "esto llegaria");
             return data;
         }
         else {
