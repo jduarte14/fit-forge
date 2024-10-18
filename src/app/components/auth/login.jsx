@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image } from "react-native";
 import StepFields from "./../stepFields";
 import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, avatarData } from "./../../../data/gymData";
+import { useUser } from "../../contexts/user/UserContext.jsx"
 
 const Login = ({setUserLogged}) => {
+  const { createUser } = useUser();
+
   const [modal, setModal] = useState(false);
   const [logged, setLogin] = useState(false);
   const [step, setStep] = useState(0);
@@ -18,6 +21,8 @@ const Login = ({setUserLogged}) => {
     3: 0,
     4: 0,
     5: 0,
+    6: 0,
+    7: 0,
   });
 
 
@@ -74,7 +79,7 @@ const Login = ({setUserLogged}) => {
       const stepKey = authKeys[step];
       const stepData = authSettings[stepKey];
       return {
-        tag: stepData.tag,
+        tag: stepData?.tag,
         fields: stepData.items,
         name: stepData.name,
       };
@@ -102,7 +107,10 @@ const Login = ({setUserLogged}) => {
     })
     setAuthStructure(structureObject);
   }
+  const handleAuthenticationResult = async (data)=>{
+    const response = createUser(data);
 
+  }
   const logUser =()=>{
     setModal(false)
     setUserLogged(true);
@@ -174,7 +182,8 @@ const Login = ({setUserLogged}) => {
                     fieldName={getStepData().name}
                     structure={authStructure}
                     action={typeAuth}
-                    logUser={logUser}
+                    handleStep={handleStep}
+                    emit={handleAuthenticationResult}
                   />
                 }
               </View>

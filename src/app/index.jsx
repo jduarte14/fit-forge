@@ -1,26 +1,30 @@
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useState, useEffect } from 'react';
+import { UserProvider } from './contexts/user/UserContext';
 import HomeView from "./home";
 import Login from './components/auth/login';
 import BottomBar from './components/layout/BottomBar';
 const Index = () => {
-  const [userLogged, setUserLogged] = useState(true);
+  const [userLogged, setUserLogged] = useState(false);
   const getUserLogged = () => {
     setUserLogged(true);
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <UserProvider>
+      <View style={styles.container}>
+        <ScrollView>
+          {
+            userLogged ? <HomeView /> : <Login setUserLogged={getUserLogged} />
+          }
+        </ScrollView>
         {
-          userLogged ? <HomeView /> : <Login setUserLogged={setUserLogged}/>
+          userLogged && <BottomBar />
         }
-      </ScrollView>
-      {
-        userLogged && <BottomBar />
-      }
 
-    </View>
+      </View>
+    </UserProvider>
+
   );
 };
 
