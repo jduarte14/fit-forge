@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
-import { handleInstructor } from './instructorController.js';
+import { handleInstructor } from './instructorController';
 
 
 const InstructorContext = createContext();
@@ -22,7 +22,7 @@ export const InstructorProvider = ({ children }) => {
     
     const response = handleInstructor('POST', formData, "/api/instructors");
     if(response) {
-      console.log(response.json());
+      console.log(response);
     }
     if(response?.status === 200) {
       console.log("funciono!!!");

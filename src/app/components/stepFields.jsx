@@ -43,8 +43,8 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
 
   const handleUser = (register) => {
     if (register) {
-      if (action == "instructorRegister" && tag == "info_form") {
-        let credentials = {credentials: currentData.credentials};
+      let credentials = { credentials: currentData.credentials };
+      if (action == "instructorRegister" || action == "ownerRegister") {
         emit(credentials, currentData);
       }
     } else if (action == "userRegister") {
@@ -77,15 +77,16 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
             },
           }));
         }
-      } else {
-        setImages((prevImages) => {
-          const updatedImages = [...prevImages, newImageUri];
-          setCurrentData((prevData) => ({
-            ...prevData,
-            [fieldName]: updatedImages,
-          }));
-          return updatedImages;
-        });
+        else {
+          setImages((prevImages) => {
+            const updatedImages = [...prevImages, newImageUri];
+            setCurrentData((prevData) => ({
+              ...prevData,
+              [fieldName]: updatedImages,
+            }));
+            return updatedImages;
+          });
+        }
       }
     } catch (error) {
       console.error(error);
@@ -194,18 +195,42 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
             <Text style={styles.inputText}>Available days:</Text>
             <View style={styles.row}>
               <View style={styles.pickerContainer}>
-                <Picker style={{ color: "white" }}>
-                  {fields.days.reverse().map((day) => {
-                    return <Picker.Item label={day} value={day} key={day} />;
-                  })}
+                <Picker
+                  style={{ color: "white" }}
+                  onValueChange={(value) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData,
+                      schedules: {
+                        ...prevData.schedules,
+                        startDays: value,
+                      },
+                    }));
+                  }}
+                >
+                  {fields.days.reverse().map((day) => (
+                    <Picker.Item label={day} value={day} key={day} />
+                  ))}
                 </Picker>
+
               </View>
               <View style={styles.pickerContainer}>
-                <Picker style={{ color: "white" }}>
-                  {fields.days.reverse().map((day) => {
-                    return <Picker.Item label={day} value={day} key={day} />;
-                  })}
+                <Picker
+                  style={{ color: "white" }}
+                  onValueChange={(value) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData,
+                      schedules: {
+                        ...prevData.schedules,
+                        endDays: value,
+                      },
+                    }));
+                  }}
+                >
+                  {fields.days.reverse().map((day) => (
+                    <Picker.Item label={day} value={day} key={day} />
+                  ))}
                 </Picker>
+
               </View>
             </View>
           </View>
@@ -284,7 +309,7 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
               )}
             </ScrollView>
           </View>
-          <TouchableOpacity style={styles.touchable} onPress={pickImage}>
+          <TouchableOpacity style={styles.touchable} onPress={() => pickImage()}>
             <View style={styles.row}>
               <FontAwesome6
                 name="images"
@@ -393,22 +418,22 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                 style={styles.input}
               />
               {
-                action == "instructorRegister" ? ( 
-                 <TextInput
-                  placeholder="Phone"
-                  onChangeText={(value) => {
-                    setCurrentData((prevData) => ({
-                      ...prevData,
-                      credentials: {
-                        ...prevData.credentials,
-                        phone: value,
-                      },
-                    }));
-                  }}
-                  placeholderTextColor="white"
-                  style={styles.input}
-                  keyboardType="numeric"
-                />):null
+                action == "instructorRegister" ? (
+                  <TextInput
+                    placeholder="Phone"
+                    onChangeText={(value) => {
+                      setCurrentData((prevData) => ({
+                        ...prevData,
+                        credentials: {
+                          ...prevData.credentials,
+                          phone: value,
+                        },
+                      }));
+                    }}
+                    placeholderTextColor="white"
+                    style={styles.input}
+                    keyboardType="numeric"
+                  />) : null
               }
 
               <TextInput

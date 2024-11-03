@@ -6,11 +6,13 @@ import StepFields from "./../stepFields";
 import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData } from "./../../../data/gymData";
 import { useUser } from "../../contexts/user/UserContext.jsx"
 import { useInstructor } from "./../../contexts/instructor/InstructorContext.jsx";
+import { useOwner } from "./../../contexts/owner/OwnerContext.jsx"
 
 const Login = ({ setUserLogged }) => {
   const { createUser, user } = useUser();
   const { createInstructor } = useInstructor();
-
+  const { createGym } = useOwner();
+  
   const [modal, setModal] = useState(false);
   const [logged, setLogin] = useState(false);
   const [step, setStep] = useState(0);
@@ -105,7 +107,7 @@ const Login = ({ setUserLogged }) => {
       response = await createInstructor(userCreator, user["_id"]);
     }
     else if (typeAuth == "ownerRegister") {
-      response = await createGym(userData);
+      response = await createGym(userCreator, user["_id"]);
     }
     if (response) {
       return response && userResponse;
