@@ -3,11 +3,13 @@ import * as Progress from "react-native-progress";
 import { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image } from "react-native";
 import StepFields from "./../stepFields";
-import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, avatarData } from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData } from "./../../../data/gymData";
 import { useUser } from "../../contexts/user/UserContext.jsx"
+import { useInstructor } from "./../../contexts/instructor/InstructorContext.jsx";
 
 const Login = ({ setUserLogged }) => {
   const { createUser, user } = useUser();
+  const { createInstructor } = useInstructor();
 
   const [modal, setModal] = useState(false);
   const [logged, setLogin] = useState(false);
@@ -46,7 +48,7 @@ const Login = ({ setUserLogged }) => {
     if (type == "instructorRegister") {
       typeData = {
         userData,
-        sportData,
+        specialtyData,
         infoForm,
       }
     }
@@ -107,8 +109,22 @@ const Login = ({ setUserLogged }) => {
     })
     setAuthStructure(structureObject);
   }
-  const handleAuthenticationResult = async (data) => {
-    const response = createUser(data);
+  const handleAuthenticationResult = async (userData, userCreator) => {
+    let userResponse;
+    let response;
+     userResponse = await createUser(userData);
+    if (typeAuth == "instructorRegister") {
+      response = await createInstructor(userCreator, user["_id"]);
+    }
+    else if (typeAuth == "ownerRegister") {
+      response = await createGym(userData);
+    }
+    if (response) {
+      return response && userResponse;
+    } else {
+      //logUser();
+      return userResponse;
+    }
   }
   const logUser = () => {
     if (user) {
@@ -116,9 +132,11 @@ const Login = ({ setUserLogged }) => {
       setUserLogged(true);
     }
   }
-  useEffect(() => {
-    logUser();
-  }, [user])
+  // useEffect(() => {
+  //   if (user) {
+  //     logUser();
+  //   }
+  // }, [])
   useEffect(() => {
     const authKeys = Object.keys(authSettings);
     const keyNames = [];
@@ -176,7 +194,7 @@ const Login = ({ setUserLogged }) => {
               <Pressable style={styles.close} onPress={() => handleModal()}>
                 <MaterialIcons name="close" color="white" style={{ fontSize: 30 }} />
               </Pressable>
-              <Text style={styles.centeredTitle}>Choose your activities</Text>
+              <Text style={styles.centeredTitle}>Add your data</Text>
               <View style={{ height: 400 }}>
                 {
                   <StepFields
@@ -189,19 +207,6 @@ const Login = ({ setUserLogged }) => {
                     emit={handleAuthenticationResult}
                   />
                 }
-              </View>
-              <View style={styles.row}>
-                {Object.keys(progress).map((key) => (
-                  <Progress.Bar
-                    key={key}
-                    progress={progress[key.items]}
-                    width={screenWidth / 10}
-                    height={10}
-                    borderColor="#2b2e37"
-                    color="#51565b"
-                    style={styles.progress}
-                  />
-                ))}
               </View>
               <View style={styles.navigationRow}>
                 <TouchableOpacity
@@ -272,6 +277,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     fontSize: 25,
+    paddingBottom: 50,
   },
   close: {
     backgroundColor: backgroundSecondBase,

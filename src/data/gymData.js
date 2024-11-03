@@ -68,6 +68,69 @@ export const sportData = {
   },
 };
 
+export const specialtyData = {
+  tag: "double_row",
+  name: "specialty",
+  items: {
+    first_row: [
+      {
+        name: "calisthenic",
+        icon: <FontAwesome6 name="person-swimming" size={50} color="white" />,
+      },
+      {
+        name: "pilates",
+        icon: <MaterialCommunityIcons name="yoga" size={50} color="white" />,
+      },
+      {
+        name: "boxing",
+        icon: (
+          <MaterialCommunityIcons name="boxing-glove" size={50} color="white" />
+        ),
+      },
+      {
+        name: "bjj",
+        icon: <MaterialIcons name="sports-mma" size={50} color="white" />,
+      },
+      {
+        name: "mma",
+        icon: <MaterialCommunityIcons name="yoga" size={50} color="white" />,
+      },
+      {
+        name: "wrestling",
+        icon: <MaterialCommunityIcons name="yoga" size={50} color="white" />,
+      },
+      {
+        name: "weightlifting",
+        icon: <FontAwesome5 name="dumbbell" size={50} color="white" />,
+      },
+      {
+        name: "yoga",
+        icon: <MaterialCommunityIcons name="yoga" size={50} color="white" />,
+      },
+    ],
+    second_row: [
+      {
+        name: "Swiming",
+        icon: <FontAwesome6 name="person-swimming" size={50} color="white" />,
+      },
+      {
+        name: "Karate",
+        icon: <MaterialCommunityIcons name="yoga" size={50} color="white" />,
+      },
+      {
+        name: "Taekwondo",
+        icon: (
+          <MaterialCommunityIcons name="boxing-glove" size={50} color="white" />
+        ),
+      },
+      {
+        name: "Capoeira",
+        icon: <MaterialIcons name="sports-mma" size={50} color="white" />,
+      },
+    ],
+  },
+};
+
 export const facilitiesData = {
   tag: "double_row",
   name: "facilities",
@@ -166,5 +229,6 @@ export const userData = {
     username: "",
     password: "",
     email: "",
+    phone: "",
   }
 }

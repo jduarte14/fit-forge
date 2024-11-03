@@ -1,6 +1,7 @@
 import { StyleSheet, ScrollView, View } from 'react-native';
 import { useState, useEffect } from 'react';
 import { UserProvider } from './contexts/user/UserContext';
+import { InstructorProvider } from "./contexts/instructor/InstructorContext";
 import HomeView from "./home";
 import Login from './components/auth/login';
 import BottomBar from './components/layout/BottomBar';
@@ -12,17 +13,19 @@ const Index = () => {
 
   return (
     <UserProvider>
-      <View style={styles.container}>
-        <ScrollView>
+      <InstructorProvider>
+        <View style={styles.container}>
+          <ScrollView>
+            {
+              userLogged ? <HomeView /> : <Login setUserLogged={getUserLogged} />
+            }
+          </ScrollView>
           {
-            userLogged ? <HomeView /> : <Login setUserLogged={getUserLogged} />
+            userLogged && <BottomBar />
           }
-        </ScrollView>
-        {
-          userLogged && <BottomBar />
-        }
 
-      </View>
+        </View>
+      </InstructorProvider>
     </UserProvider>
 
   );

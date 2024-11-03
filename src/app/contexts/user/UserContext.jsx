@@ -16,9 +16,7 @@ export const UserProvider = ({ children }) => {
     formData.append("username", newUser.credentials.username);
     
     const response = await handleUser("POST", formData, "/auth/user" ); 
-    console.log(response, "en el state");
     if(response.status) {
-      console.log(response.user);
       setUser(response.user);
     }
     return response;
