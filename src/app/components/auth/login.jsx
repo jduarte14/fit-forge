@@ -17,16 +17,6 @@ const Login = ({ setUserLogged }) => {
   const [authStructure, setAuthStructure] = useState([]);
   const [typeAuth, setTypeAuth] = useState({});
   const [authSettings, setAuthSettings] = useState({});
-  const [progress, setProgress] = useState({
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-  });
-
 
   // This funciton handles the type of user on the authentication process
   const handleAutenticationSettings = (type) => {
@@ -58,22 +48,20 @@ const Login = ({ setUserLogged }) => {
 
   const handleStep = (direction) => {
     setStep((prevStep) => {
+      const maxSteps = Object.keys(authSettings).length - 1;
       let newStep;
-      if (direction === "next" && prevStep < 5) {
+  
+      if (direction === "next" && prevStep < maxSteps) {
         newStep = prevStep + 1;
-      } else if (direction === "back" && prevStep >= 0) {
+      } else if (direction === "back" && prevStep > 0) {
         newStep = prevStep - 1;
-      }
-
-      setProgress((prevProgress) => ({
-        ...prevProgress,
-        [newStep]: 0,
-        [prevStep]: newStep > prevStep ? 1 : 0,
-      }));
-
+      } else {
+        newStep = prevStep;
+      }  
       return newStep;
     });
   };
+  
 
   const getStepData = () => {
     const authKeys = Object.keys(authSettings);
@@ -81,7 +69,7 @@ const Login = ({ setUserLogged }) => {
       const stepKey = authKeys[step];
       const stepData = authSettings[stepKey];
       return {
-        tag: stepData?.tag,
+        tag: stepData.tag,
         fields: stepData.items,
         name: stepData.name,
       };

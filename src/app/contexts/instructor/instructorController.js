@@ -1,7 +1,6 @@
 const API_URL = 'https://ejercitate-backend.onrender.com';
 
 export const handleInstructor = async (method, data, params)=>{
-    console.log(data, "coso");
     try {
         const response = await fetch(API_URL + params, {
             method: method,

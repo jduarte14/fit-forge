@@ -303,14 +303,14 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
             Please confirm the information you have provided:
           </Text>
 
-          {Object.entries(currentData).map(([key, value]) => (
+          {/* {Object.entries(currentData).map(([key, value]) => (
             <View key={key} style={styles.infoRow}>
               <Text style={styles.infoKey}>{key}:</Text>
               <Text style={styles.infoValue}>
                 {Array.isArray(value) ? value : JSON.stringify(value)}
               </Text>
             </View>
-          ))}
+          ))} */}
 
           <Pressable style={styles.button} onPress={() => handleUser(true)}>
             <Text style={styles.text}>
@@ -409,23 +409,6 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                   style={styles.input}
                   keyboardType="numeric"
                 />):null
-              }
-              {
-                action == "ownerRegister" ? (
-                  <TextInput
-                    placeholder="Phone"
-                    onChangeText={(value) => {
-                      setCurrentData((prevData) => ({
-                        ...prevData,
-                        credentials: {
-                          ...prevData.credentials,
-                          phone: value,
-                        },
-                      }));
-                    }}
-                    placeholderTextColor="white"
-                    style={styles.input}
-                  />) : null
               }
 
               <TextInput
