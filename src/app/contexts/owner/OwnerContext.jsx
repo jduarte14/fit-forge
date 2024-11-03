@@ -10,13 +10,13 @@ export const OwnerProvider = ({ children }) => {
   const createGym = async (gym, userId) => {
     try {
     const formData = new FormData();
-    console.log(gym, "formData");
-    formData.append("name", "gym_name");
-    formData.append("description", "gym_description");
-    formData.append("address", "address");
+    
     formData.append("latitude", "-3333345");
     formData.append("longitude", "-3333345");
     //Dinamicos
+    formData.append("name", gym.description.gymName);
+    formData.append("description", gym.description.description);
+    formData.append("address", gym.description.address);
     formData.append("userId", userId);
     formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
     formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);

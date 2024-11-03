@@ -232,3 +232,22 @@ export const userData = {
     phone: "",
   }
 }
+
+
+export const instructorDescription = {
+  tag: "instructor_description",
+  name: "description",
+  items: {
+    description: "",
+  }
+}
+
+export const gymDescription = {
+  tag: "gym_description",
+  name: "description",
+  items: {
+    gymName: "",
+    address: "",
+    description: "",
+  }
+}

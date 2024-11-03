@@ -3,7 +3,7 @@ import * as Progress from "react-native-progress";
 import { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Text, Dimensions, Pressable, Modal, TouchableOpacity, Image } from "react-native";
 import StepFields from "./../stepFields";
-import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData } from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData, gymDescription, instructorDescription } from "./../../../data/gymData";
 import { useUser } from "../../contexts/user/UserContext.jsx"
 import { useInstructor } from "./../../contexts/instructor/InstructorContext.jsx";
 import { useOwner } from "./../../contexts/owner/OwnerContext.jsx"
@@ -30,6 +30,7 @@ const Login = ({ setUserLogged }) => {
       typeData = {
         userData,
         sportData,
+        gymDescription,
         facilitiesData,
         schedulesData,
         pricesData,
@@ -40,6 +41,7 @@ const Login = ({ setUserLogged }) => {
     if (type == "instructorRegister") {
       typeData = {
         userData,
+        instructorDescription,
         specialtyData,
         infoForm,
       }

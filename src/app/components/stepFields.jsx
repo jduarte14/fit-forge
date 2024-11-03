@@ -345,6 +345,64 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
         </View>
       ) : null}
       {
+        tag === "instructor_description" || tag === "gym_description" ? (
+
+          <View style={styles.form}>
+            {tag == "gym_description" ? (
+              <>
+              <TextInput
+                placeholder={"Gym name".toLowerCase()}
+                placeholderTextColor="white"
+                color="white"
+                onChangeText={(value) => {
+                  setCurrentData((prevData) => ({
+                    ...prevData,
+                    description: {
+                      ...prevData.description,
+                      gymName: value,
+                    },
+                  }));
+                }}
+                style={styles.input}
+              />
+              <TextInput
+              placeholder={"Address".toLowerCase()}
+              placeholderTextColor="white"
+              color="white"
+              onChangeText={(value) => {
+                setCurrentData((prevData) => ({
+                  ...prevData,
+                  description: {
+                    ...prevData.description,
+                    address: value,
+                  },
+                }));
+              }}
+              style={styles.input}
+            />
+            </>
+
+              ) : null}
+
+            <TextInput
+              placeholder={"Description".toLowerCase()}
+              placeholderTextColor="white"
+              color="white"
+              onChangeText={(value) => {
+                setCurrentData((prevData) => ({
+                  ...prevData,
+                  description: {
+                    ...prevData.description,
+                    description: value,
+                  },
+                }));
+              }}
+              style={styles.input}
+            />
+          </View>
+        ) : null
+      }
+      {
         tag == "user_data" ? (
           <>
             <View style={styles.galleryContainer}>
@@ -464,7 +522,8 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
           </>
         ) : null
       }
-    </View >
+    </View>
+
   );
 };
 

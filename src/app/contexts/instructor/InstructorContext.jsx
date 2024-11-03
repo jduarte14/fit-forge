@@ -10,20 +10,20 @@ export const InstructorProvider = ({ children }) => {
   const createInstructor = async (newInstructor, userId) => {
     try {
     const formData = new FormData();
+    console.log(newInstructor, "nuevo_instructor");
+
     formData.append("name", newInstructor.credentials.name);
     formData.append("phone", newInstructor.credentials.phone);
     formData.append("email", newInstructor.credentials.email);
-    formData.append("description", "cosopum");
+    formData.append("description", newInstructor.description.description);
     formData.append("userId", userId);
     formData.append("avatar", { uri:newInstructor.credentials.avatar, type:'image/jpeg', name:'avatar.jpg' });
     for (const specialty of newInstructor.specialty) {
       formData.append(`specialty[${specialty}]`, "true");
     }
     
-    const response = handleInstructor('POST', formData, "/api/instructors");
-    if(response) {
-      console.log(response);
-    }
+    const response = await handleInstructor('POST', formData, "/api/instructors");
+
     if(response?.status === 200) {
       console.log("funciono!!!");
       setInstructor(response.instructor);
