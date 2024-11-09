@@ -9,7 +9,7 @@ import { useInstructor } from "./../../contexts/instructor/InstructorContext.jsx
 import { useOwner } from "./../../contexts/owner/OwnerContext.jsx"
 
 const Login = ({ setUserLogged }) => {
-  const { createUser, user } = useUser();
+  const { createUser, user, logUser, getToken, getUser } = useUser();
   const { createInstructor } = useInstructor();
   const { createGym } = useOwner();
   
@@ -19,6 +19,7 @@ const Login = ({ setUserLogged }) => {
   const [authStructure, setAuthStructure] = useState([]);
   const [typeAuth, setTypeAuth] = useState({});
   const [authSettings, setAuthSettings] = useState({});
+  const [logData, setLogData] = useState({});
 
   // This funciton handles the type of user on the authentication process
   const handleAutenticationSettings = (type) => {
@@ -118,17 +119,25 @@ const Login = ({ setUserLogged }) => {
       return userResponse;
     }
   }
-  const logUser = () => {
+  const login = async () => {
+    await logUser(logData);
     if (user) {
       setModal(false)
       setUserLogged(true);
     }
+  } 
+  const handleToken = async () => {
+    let token = await getToken();
+    await getUser(token);
+    if(user) {
+      setUserLogged(true);
+    }
+
   }
-  // useEffect(() => {
-  //   if (user) {
-  //     logUser();
-  //   }
-  // }, [])
+
+  useEffect(() => {
+    handleToken();
+  }, [])
   useEffect(() => {
     const authKeys = Object.keys(authSettings);
     const keyNames = [];
@@ -148,19 +157,19 @@ const Login = ({ setUserLogged }) => {
       <View style={styles.form}>
         <TextInput
           placeholder="Email"
-          onChangeText=""
           placeholderTextColor="white"
           style={styles.input}
+          onChangeText={(value) => setLogData(prevData => ({ ...prevData, email: value }))}
         />
         <TextInput
           placeholder="Password"
           placeholderTextColor="white"
           secureTextEntry
-          onChangeText=""
+          onChangeText={(value) => setLogData(prevData => ({ ...prevData, password: value }))}
           style={styles.input}
         />
         <View style={styles.buttonRow}>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button} onPress={() => { login() }}>
             <Text style={styles.buttonText}>
               Login
             </Text>

@@ -6,6 +6,7 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomBar from './../layout/BottomBar';
 import UserSettings from './../settings/userSettings';
+import { useUser } from './../../contexts/user/UserContext';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

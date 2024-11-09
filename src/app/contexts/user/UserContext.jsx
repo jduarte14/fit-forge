@@ -1,11 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useState, useContext } from 'react';
 import { handleUser } from './userController.js';
-
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [logged, setUserLogged] = useState(false);
 
   const createUser = async (newUser) => {
     try {
@@ -16,7 +17,8 @@ export const UserProvider = ({ children }) => {
     formData.append("username", newUser.credentials.username);
     
     const response = await handleUser("POST", formData, "/auth/user" ); 
-    if(response.status) {
+
+    if(response.status == "success") { 
       setUser(response.user);
     }
     return response;
@@ -26,8 +28,52 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+
+   const logUser = async (user) => {
+    try {
+      const formData =  new URLSearchParams();
+      formData.append("email", user.email);
+      formData.append("password", user.password);
+      const response = await handleUser("POST", formData.toString(), "/auth/user/login", true);
+      if(response.status == "success") {
+        setToken(response.user._id);
+        setUser(response.user);
+      }
+    }
+    catch {
+      console.error(error.message);
+    }
+  }
+
+  const setToken = async (token) => {
+    try {
+      await AsyncStorage.setItem("token", token);
+    } catch (error){
+      console.error(error.message);
+    }
+  }
+
+  const getToken = async () => {
+    try{
+      return await AsyncStorage.getItem("token");
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  const getUser = async (id) => {
+    try {
+      const response = await handleUser("GET", null, `/auth/user/${id}`);
+      if (response.status == "success") {
+        setUser(response.user_found);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ user, createUser }}>
+    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser }}>
       {children}
     </UserContext.Provider>
   );

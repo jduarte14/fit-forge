@@ -10,7 +10,6 @@ export const InstructorProvider = ({ children }) => {
   const createInstructor = async (newInstructor, userId) => {
     try {
     const formData = new FormData();
-    console.log(newInstructor, "nuevo_instructor");
 
     formData.append("name", newInstructor.credentials.name);
     formData.append("phone", newInstructor.credentials.phone);
@@ -25,10 +24,9 @@ export const InstructorProvider = ({ children }) => {
     const response = await handleInstructor('POST', formData, "/api/instructors");
 
     if(response?.status === 200) {
-      console.log("funciono!!!");
       setInstructor(response.instructor);
     } else {
-      console.log(response.status, "error");
+      console.error(response.status, "error");
     }
     return response;
     }
