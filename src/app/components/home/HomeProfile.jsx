@@ -30,6 +30,7 @@ const HomeProfile = () => {
 const styles = StyleSheet.create({
     container: {
         marginBottom: 30,
+        paddingTop: 15,
     },
     title: {
         color: "white",

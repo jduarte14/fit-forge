@@ -137,7 +137,7 @@ const Login = ({ setUserLogged }) => {
 
   useEffect(() => {
     handleToken();
-  }, [])
+  }, [user])
   useEffect(() => {
     const authKeys = Object.keys(authSettings);
     const keyNames = [];

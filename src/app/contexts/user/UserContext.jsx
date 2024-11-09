@@ -72,8 +72,26 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  const patchUser = async (userData, id) => {
+    try {
+      const formData = new FormData();
+      Object.keys(userData).forEach(key => {
+        formData.append(key, userData[key]);
+    });
+      const response = await handleUser("PATCH", formData, `/auth/user/${id}`);
+      if(response.status == "success") {
+        setUser(response.user_updated);
+      } else {
+        console.error(error.message);
+      }
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser }}>
+    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser, patchUser }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, Dimensions, ScrollView, Touchable } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomBar from './../layout/BottomBar';
 import UserSettings from './../settings/userSettings';
-import { useUser } from './../../contexts/user/UserContext';
+import { useUser } from "./../../contexts/user/UserContext";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -14,23 +14,33 @@ const screenHeight = Dimensions.get('window').height;
 const userPanel = () => {
     const [modal, setModal] = useState("");
     const [userData, setUserData] = useState(null);
+    const [patchData, setPatchData] = useState({});
+
+    const { user, patchUser } = useUser();
+
+    const modifyUser = async (userData)=>{ 
+        await patchUser(userData, user["_id"]);
+    }
 
     const typeSettings = {
-        password: {
-            tag: "password",
-            item: "input",
-            value: "",
-            title: "Change your password",
-            placeholder:"Enter your new password",
-            button: "Submit change"
-        },
-        email: {
-            tag: "email",
-            item: "input",
-            value: "",
-            title: "Change your email adress",
-            placeholder:"Enter your new email adress",
-            button: "Submit change"
+        credentials: {
+            title: "Update Your Credentials",
+            button: "Submit change",
+            emit: modifyUser,
+            fields: [
+                {
+                    tag: "password",
+                    item: "input",
+                    placeholder: "Enter your new password",
+                    keyboardType: "default"
+                },
+                {
+                    tag: "email",
+                    item:"input",
+                    placeholder: "Enter your new email address",
+                    keyboardType: "email-address"
+                }
+            ],
         },
         avatar: {
             type: "avatar",
@@ -40,10 +50,11 @@ const userPanel = () => {
             button: "Submit change"
         }
     };
-
+    
     const handleModal = (tag) => {
         if (tag) {
-            setUserData(typeSettings[tag]);
+            let seted = typeSettings[tag];
+            setUserData(seted);
             setModal(tag);
         } else {
             setModal("");
@@ -51,8 +62,11 @@ const userPanel = () => {
         }
     }
 
-    const handleSettings = (value) => {
-        console.log(value);
+    const handleSettings = (value, tag) => {
+        setPatchData(prevData => {
+            const newData = { ...prevData, [tag]: value };
+            return newData;
+        });
     }
 
 
@@ -63,15 +77,18 @@ const userPanel = () => {
                     <View style={styles.profileRow}>
                         <Image
                             style={styles.profileImage}
-                            source={require('./../../../img/avatar.png')}
+                            source={user.avatar ? { uri: user.avatar } : require('./../../../img/avatar.png')}
                         />
-                        <Text style={styles.title}>Username</Text>
+                        <View style={styles.infoContainer}>
+                            <Text style={styles.title}>{user.username}</Text>
+                            <Text style={styles.subTitle}>{user.email}</Text>
+                        </View>
                     </View>
                     <View style={styles.settings}>
-                        <TouchableOpacity style={styles.option} onPress={() => { handleModal("email") }}>
+                        <TouchableOpacity style={styles.option} onPress={() => { handleModal("credentials") }}>
                             <Fontisto name="email" size={24} color="white" />
                             <Text style={styles.text}>
-                                Change email
+                                Change credentials
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.option} onPress={() => { handleModal("email") }}>
@@ -100,7 +117,7 @@ const userPanel = () => {
                                     <TouchableOpacity style={styles.back} onPress={() => handleModal("")}>
                                         <Ionicons style={{ margin: "auto" }} name="chevron-back" size={24} color="white" />
                                     </TouchableOpacity>
-                                    <UserSettings field={userData} handleSettings={handleSettings} />
+                                    <UserSettings field={userData} handleSettings={handleSettings} data={patchData}/>
                                 </View>
                             </Modal>) : null
                     }
@@ -154,16 +171,27 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         marginBottom: 50,
         position: 'absolute',
-        top: '10%',
+        top: '5%',
     },
     profileImage: {
-        width: 55,
-        height: 55,
+        width: 65,
+        height: 65,
+        borderRadius: 100,
+        borderColor: "#51565b",
+        borderWidth: 2,
+    },
+    infoContainer: {
+        display: "flex",
+
     },
     title: {
         fontSize: 20,
         color: "white",
         fontWeight: "bold",
+    },
+    subTitle: {
+        fontSize: 16,
+        color: "white",
     },
     text: {
         color: "white",

@@ -15,8 +15,8 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const basicFields = ({ field, setData }) => {
-    const handleInput = (text) => {
-        setData(text);
+    const handleInput = (text, value) => {
+        setData(text, value.tag);
     };
 
     return (
@@ -25,35 +25,35 @@ const basicFields = ({ field, setData }) => {
                 field.item === "input" ? (
                     <View>
                         {
-                        field.title ?
-                            (
-                                <Text style={styles.title}>
-                                    {field.title}
-                                </Text>
-                            ) : null
+                            field.title ?
+                                (
+                                    <Text style={styles.title}>
+                                        {field.title}
+                                    </Text>
+                                ) : null
                         }
 
                         <TextInput
                             style={styles.input}
                             value={field.value}
                             secureTextEntry={field.password ? true : false}
-                            onChangeText={(text) => handleInput(text)}
+                            onChangeText={(text) => handleInput(text, field)}
                             keyboardType={field.tag === "email" ? "email-address" : "default"}
                             placeholder={field.placeholder || ""}
                             placeholderTextColor="#ccc"
                         />
                         {
                             field.button ? (
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.text}>
-                                    {field.button}
-                                </Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity style={styles.button}>
+                                    <Text style={styles.text}>
+                                        {field.button}
+                                    </Text>
+                                </TouchableOpacity>
                             ) : null
                         }
                     </View>
                 ) : (
-                    <Text style={styles.text}>No hay nada acá {field.item}</Text>
+                    null
                 )
             }
         </View>
@@ -67,7 +67,6 @@ const backgroundSecondBase = "#2b2e37";
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: backgroundBase,
         justifyContent: "center",
         alignItems: "center",
