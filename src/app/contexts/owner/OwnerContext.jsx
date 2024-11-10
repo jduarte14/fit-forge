@@ -41,8 +41,8 @@ export const OwnerProvider = ({ children }) => {
       });
       
 
-     const response = handleOwner('POST', formData, "/api/gyms");
-     if(response?.status === 200) {
+     const response = await handleOwner('POST', formData, "/api/gyms");
+     if(response.status === "success") {
       setOwner(response.gyms);
     } else {
       console.error(response.status, "error");

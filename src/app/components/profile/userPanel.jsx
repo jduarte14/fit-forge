@@ -16,9 +16,9 @@ const userPanel = () => {
     const [userData, setUserData] = useState(null);
     const [patchData, setPatchData] = useState({});
 
-    const { user, patchUser } = useUser();
+    const { user, patchUser, removeToken } = useUser();
 
-    const modifyUser = async (userData)=>{ 
+    const modifyUser = async (userData) => {
         await patchUser(userData, user["_id"]);
     }
 
@@ -36,7 +36,7 @@ const userPanel = () => {
                 },
                 {
                     tag: "email",
-                    item:"input",
+                    item: "input",
                     placeholder: "Enter your new email address",
                     keyboardType: "email-address"
                 }
@@ -50,7 +50,7 @@ const userPanel = () => {
             button: "Submit change"
         }
     };
-    
+
     const handleModal = (tag) => {
         if (tag) {
             let seted = typeSettings[tag];
@@ -67,6 +67,10 @@ const userPanel = () => {
             const newData = { ...prevData, [tag]: value };
             return newData;
         });
+    }
+
+    const logout =()=>{
+        removeToken();
     }
 
 
@@ -117,11 +121,17 @@ const userPanel = () => {
                                     <TouchableOpacity style={styles.back} onPress={() => handleModal("")}>
                                         <Ionicons style={{ margin: "auto" }} name="chevron-back" size={24} color="white" />
                                     </TouchableOpacity>
-                                    <UserSettings field={userData} handleSettings={handleSettings} data={patchData}/>
+                                    <UserSettings field={userData} handleSettings={handleSettings} data={patchData} />
                                 </View>
                             </Modal>) : null
                     }
-
+                    <View style={styles.row}>
+                        <TouchableOpacity onPress={()=> logout()}>
+                            <Text style={styles.redText}>
+                                Logout
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <BottomBar />
             </View>
@@ -188,6 +198,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "white",
         fontWeight: "bold",
+    },
+    redText: {
+        fontSize: 18,
+        color: "#ef4444",
+        fontWeight: "bold",
+        textAlign: "center",
+        paddingTop: 40,
     },
     subTitle: {
         fontSize: 16,

@@ -1,5 +1,4 @@
 const API_URL = 'https://ejercitate-backend.onrender.com';
-
 export const handleOwner = async (method, data, params)=>{
     try {
         const response = await fetch(API_URL + params, {
@@ -8,7 +7,7 @@ export const handleOwner = async (method, data, params)=>{
         });
 
         if(response.status == 200) {
-            const data = response.json();
+            const data = await response.json();
             return data;
         }
         else {
