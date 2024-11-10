@@ -79,7 +79,7 @@ export const UserProvider = ({ children }) => {
       const response = await handleUser("GET", null, `/auth/user/${id}`);
       if (response.status == "success") {
         setUser(response.user_found);
-        if(response.owner) {
+        if(response.gym) {
           setGymData(response.gym);
         }
       }
@@ -107,7 +107,7 @@ export const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser, patchUser, removeToken }}>
+    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser, patchUser, removeToken, gymData }}>
       {children}
     </UserContext.Provider>
   );

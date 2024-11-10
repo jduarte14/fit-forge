@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomBar from './../layout/BottomBar';
 import UserSettings from './../settings/userSettings';
 import { useUser } from "./../../contexts/user/UserContext";
+import { useOwner } from "./../../contexts/owner/OwnerContext";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -16,7 +17,15 @@ const userPanel = () => {
     const [userData, setUserData] = useState(null);
     const [patchData, setPatchData] = useState({});
 
-    const { user, patchUser, removeToken } = useUser();
+    const { user, patchUser, removeToken, getUser, gymData } = useUser();
+
+    const getUserInfo = async () =>{
+        if(user.owner) {
+        await getUser(user._id);
+        } else if (user.instructor) {
+
+        }
+    }
 
     const modifyUser = async (userData) => {
         await patchUser(userData, user["_id"]);
@@ -72,6 +81,10 @@ const userPanel = () => {
     const logout =()=>{
         removeToken();
     }
+
+    useEffect(()=>{
+        getUserInfo();
+    }, [])
 
 
     return (

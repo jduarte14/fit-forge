@@ -55,6 +55,17 @@ export const OwnerProvider = ({ children }) => {
     }
   };
 
+  const getGym = async =(id)=> {
+    try {
+      const response = handleOwner('GET', null, "/api/gyms");
+      if(response.status === "success") {
+        setOwner(response);
+      }
+    } catch (error) { 
+      console.error(error.message);
+    }
+  }
+
   return (
     <OwnerContext.Provider value={{ Owner, createGym }}>
       {children}
