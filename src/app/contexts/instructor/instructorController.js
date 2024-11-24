@@ -1,4 +1,4 @@
-const API_URL = 'https://ejercitate-backend.onrender.com';
+const API_URL = 'https://fitforgebackend.vercel.app';
 
 export const handleInstructor = async (method, data, params)=>{
     try {

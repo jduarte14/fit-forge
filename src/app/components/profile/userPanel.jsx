@@ -6,6 +6,7 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomBar from './../layout/BottomBar';
 import UserSettings from './../settings/userSettings';
+import GymSettings from './../settings/gymSettings';
 import { useUser } from "./../../contexts/user/UserContext";
 import { useOwner } from "./../../contexts/owner/OwnerContext";
 
@@ -15,15 +16,19 @@ const screenHeight = Dimensions.get('window').height;
 const userPanel = () => {
     const [modal, setModal] = useState("");
     const [userData, setUserData] = useState(null);
+    const [gymInfo, setGymInfo] = useState(null);
     const [patchData, setPatchData] = useState({});
+    const [userType, setUserType] = useState({ isOwner: false, isInstructor: false });
+
 
     const { user, patchUser, removeToken, getUser, gymData } = useUser();
 
-    const getUserInfo = async () =>{
-        if(user.owner) {
-        await getUser(user._id);
+    const getUserInfo = async () => {
+        if (user.owner) {
+            await getUser(user._id);
+            setUserType(prevData => ({ ...prevData, isOwner: true }));
         } else if (user.instructor) {
-
+            setUserType(prevData => ({ ...prevData, isInstructor: true }));
         }
     }
 
@@ -62,14 +67,20 @@ const userPanel = () => {
 
     const handleModal = (tag) => {
         if (tag) {
-            let seted = typeSettings[tag];
-            setUserData(seted);
+            if (userType.isOwner && tag === "gym") {
+                setGymInfo(tag);
+            } else {
+                let seted = typeSettings[tag];
+                setUserData(seted);
+            }
             setModal(tag);
         } else {
             setModal("");
             setUserData(null);
+            setGymInfo(null);
         }
-    }
+    };
+
 
     const handleSettings = (value, tag) => {
         setPatchData(prevData => {
@@ -78,11 +89,11 @@ const userPanel = () => {
         });
     }
 
-    const logout =()=>{
+    const logout = () => {
         removeToken();
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getUserInfo();
     }, [])
 
@@ -126,20 +137,42 @@ const userPanel = () => {
                                 Payment settings
                             </Text>
                         </TouchableOpacity>
+                        {
+                            userType.isOwner ? <>
+                                <TouchableOpacity style={styles.option} onPress={() => { handleModal("gym") }}>
+                                    <MaterialCommunityIcons name="kettlebell" size={24} color="white" />
+                                    <Text style={styles.text}>
+                                        Manage your gym
+                                    </Text>
+                                </TouchableOpacity>
+                            </> : null
+                        }
+
                     </View>
                     {
-                        modal != "" ? (
+                        modal !== "" && (
                             <Modal animationType="slide">
                                 <View style={styles.modal}>
                                     <TouchableOpacity style={styles.back} onPress={() => handleModal("")}>
                                         <Ionicons style={{ margin: "auto" }} name="chevron-back" size={24} color="white" />
                                     </TouchableOpacity>
-                                    <UserSettings field={userData} handleSettings={handleSettings} data={patchData} />
+                                    {userType.isOwner && modal === "gym" ? (
+                                        <GymSettings
+                                            emit={modifyUser}
+                                            field={gymInfo}
+                                            tag="gymSettings"
+                                            handleModal={handleModal}
+                                        />
+                                    ) : (
+                                        <UserSettings field={userData} handleSettings={handleSettings} data={patchData} />
+                                    )}
                                 </View>
-                            </Modal>) : null
+                            </Modal>
+                        )
                     }
+
                     <View style={styles.row}>
-                        <TouchableOpacity onPress={()=> logout()}>
+                        <TouchableOpacity onPress={() => logout()}>
                             <Text style={styles.redText}>
                                 Logout
                             </Text>
