@@ -109,8 +109,9 @@ const Login = ({ setUserLogged }) => {
     if (typeAuth == "instructorRegister") {
       response = await createInstructor(userCreator, user["_id"]);
     }
+
     else if (typeAuth == "ownerRegister") {
-      response = await createGym(userCreator, user["_id"]);
+      response = await createGym(userCreator, userResponse.user["_id"]);
     }
     if (response) {
       return response && userResponse;

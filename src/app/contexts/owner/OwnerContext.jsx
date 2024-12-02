@@ -10,12 +10,12 @@ export const OwnerProvider = ({ children }) => {
   const createGym = async (gym, userId) => {
     try {
     const formData = new FormData();
-    
     formData.append("latitude", "-3333345");
     formData.append("longitude", "-3333345");
     //Dinamicos
     formData.append("name", gym.description.gymName);
     formData.append("description", gym.description.description);
+    formData.append("shortDescription", gym.description.shortDescription || "");
     formData.append("address", gym.description.address);
     formData.append("userId", userId);
     formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
@@ -33,12 +33,12 @@ export const OwnerProvider = ({ children }) => {
         formData.append(`sports[${sport}]`, "true");
     }
     gym.gallery.forEach((image, index) => {
-        if (index === 0) {
-          formData.append("imagen", { uri: image, type: 'image/jpeg', name: 'imagen.jpg' });
-        } else {
-          formData.append(`imagen${index}`, { uri: image, type: 'image/jpeg', name: `imagen_${index}.jpg` });
-        }
+      formData.append("images", {
+          uri: image,
+          type: "image/jpeg",
+          name: `image_${index}.jpg`,
       });
+  });
       
 
      const response = await handleOwner('POST', formData, "/api/gyms");

@@ -5,8 +5,9 @@ import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-nati
 import { MaterialIcons } from "@expo/vector-icons";
 import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData, gymDescription, instructorDescription } from "./../../../data/gymData";
 
-const GymSettings = ({ field, emit }) => {
+const GymSettings = ({ field, emit, ownerData }) => {
     const [step, setStep] = useState(0);
+    const [intialData, setInitialData] = useState(new Set);
 
     const typeData = {
         sportData,
@@ -35,19 +36,30 @@ const GymSettings = ({ field, emit }) => {
     };
 
     const getStepData = () => {
-        const authKeys = Object.keys(typeData);
+        const gymKeys = Object.keys(typeData);
 
-        if (authKeys[step]) {
-            const stepKey = authKeys[step];
+        if (gymKeys[step]) {
+            const stepKey = gymKeys[step];
             const stepData = typeData[stepKey];
-            return {
+            let gymInfo = {
                 tag: stepData.tag,
                 fields: stepData.items,
-                name: stepData.name,
-            };
+                name: stepData.name
+            }
+
+            return gymInfo;
         }
         return {};
     };
+
+    const intialValue = () => {
+        const patchValue = new Set(Object.keys(ownerData[getStepData().name]));
+        setInitialData([...patchValue]);
+    }
+
+    useEffect(() => {
+        intialValue();
+    }, [step])
 
     return (
         <ScrollView style={styles.container}>
@@ -58,6 +70,7 @@ const GymSettings = ({ field, emit }) => {
                 fieldName={getStepData().name}
                 structure={typeData}
                 handleStep={handleStep}
+                intialData={intialData}
                 emit={emit}
             />
             <View style={styles.navigationRow}>

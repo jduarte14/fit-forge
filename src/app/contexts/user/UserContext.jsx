@@ -6,7 +6,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [gymData, setGymData] = useState(null);
+  const [ownerData, setOwnerData] = useState(null);
   const [logged, setUserLogged] = useState(false);
 
   const createUser = async (newUser) => {
@@ -18,8 +18,8 @@ export const UserProvider = ({ children }) => {
       formData.append("username", newUser.credentials.username);
 
       const response = await handleUser("POST", formData, "/auth/user");
-
       if (response.status == "success") {
+        console.log("setea el user", newUser);
         setUser(response.user);
       }
       return response;
@@ -80,7 +80,7 @@ export const UserProvider = ({ children }) => {
       if (response.status == "success") {
         setUser(response.user_found);
         if(response.gym) {
-          setGymData(response.gym);
+          setOwnerData(response.gym);
         }
       }
     } catch (error) {
@@ -107,7 +107,7 @@ export const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser, patchUser, removeToken, gymData }}>
+    <UserContext.Provider value={{ user, createUser, logUser, setToken, getToken, getUser, patchUser, removeToken, ownerData }}>
       {children}
     </UserContext.Provider>
   );

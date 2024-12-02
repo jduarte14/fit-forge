@@ -78,7 +78,7 @@ const InstructorSettings = ({ field, emit }) => {
     );
 };
 
-export default GymSettings;
+export default InstructorSettings;
 
 
 let backgroundBase = "#1c2229";

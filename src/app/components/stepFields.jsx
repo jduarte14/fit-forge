@@ -19,11 +19,25 @@ import {
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
-const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emit }) => {
+const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emit, intialData }) => {
   const [currentData, setCurrentData] = useState(structure);
   const [selectedItem, setSelectedItem] = useState([]);
   const [images, setImages] = useState([]);
   const [avatar, setAvatar] = useState([]);
+  useEffect(() => {
+
+    if (intialData?.length > 0) {
+      setCurrentData((prevData) => ({
+        ...prevData,
+        [fieldName]: intialData
+      }));
+      if (tag == "double_row") {
+        intialData.forEach(item => {
+          handleSelectedItem(item);
+        })
+      }
+    }
+  }, [intialData, fieldName]);
 
   const handleSelectedItem = (item) => {
     let itemData = [];
@@ -350,39 +364,39 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
           <View style={styles.form}>
             {tag == "gym_description" ? (
               <>
-              <TextInput
-                placeholder={"Gym name".toLowerCase()}
-                placeholderTextColor="white"
-                color="white"
-                onChangeText={(value) => {
-                  setCurrentData((prevData) => ({
-                    ...prevData,
-                    description: {
-                      ...prevData.description,
-                      gymName: value,
-                    },
-                  }));
-                }}
-                style={styles.input}
-              />
-              <TextInput
-              placeholder={"Address".toLowerCase()}
-              placeholderTextColor="white"
-              color="white"
-              onChangeText={(value) => {
-                setCurrentData((prevData) => ({
-                  ...prevData,
-                  description: {
-                    ...prevData.description,
-                    address: value,
-                  },
-                }));
-              }}
-              style={styles.input}
-            />
-            </>
+                <TextInput
+                  placeholder={"Gym name".toLowerCase()}
+                  placeholderTextColor="white"
+                  color="white"
+                  onChangeText={(value) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData,
+                      description: {
+                        ...prevData.description,
+                        gymName: value,
+                      },
+                    }));
+                  }}
+                  style={styles.input}
+                />
+                <TextInput
+                  placeholder={"Address".toLowerCase()}
+                  placeholderTextColor="white"
+                  color="white"
+                  onChangeText={(value) => {
+                    setCurrentData((prevData) => ({
+                      ...prevData,
+                      description: {
+                        ...prevData.description,
+                        address: value,
+                      },
+                    }));
+                  }}
+                  style={styles.input}
+                />
+              </>
 
-              ) : null}
+            ) : null}
 
             <TextInput
               placeholder={"Description".toLowerCase()}

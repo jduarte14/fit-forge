@@ -21,8 +21,9 @@ const userPanel = () => {
     const [userType, setUserType] = useState({ isOwner: false, isInstructor: false });
 
 
-    const { user, patchUser, removeToken, getUser, gymData } = useUser();
+    const { user, patchUser, removeToken, getUser, ownerData } = useUser();
 
+    
     const getUserInfo = async () => {
         if (user.owner) {
             await getUser(user._id);
@@ -81,6 +82,7 @@ const userPanel = () => {
         }
     };
 
+ 
 
     const handleSettings = (value, tag) => {
         setPatchData(prevData => {
@@ -162,6 +164,7 @@ const userPanel = () => {
                                             field={gymInfo}
                                             tag="gymSettings"
                                             handleModal={handleModal}
+                                            ownerData={ownerData}
                                         />
                                     ) : (
                                         <UserSettings field={userData} handleSettings={handleSettings} data={patchData} />
