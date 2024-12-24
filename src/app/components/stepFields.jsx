@@ -19,25 +19,37 @@ import {
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
-const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emit, intialData }) => {
+const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emit, intialData, onPatch }) => {
   const [currentData, setCurrentData] = useState(structure);
   const [selectedItem, setSelectedItem] = useState([]);
   const [images, setImages] = useState([]);
   const [avatar, setAvatar] = useState([]);
-  useEffect(() => {
 
-    if (intialData?.length > 0) {
-      setCurrentData((prevData) => ({
-        ...prevData,
-        [fieldName]: intialData
-      }));
-      if (tag == "double_row") {
-        intialData.forEach(item => {
+  if (onPatch) {
+    useEffect(() => {
+      let typeTags = ["double_row", "gallery_form"];
+      if (Object.keys(intialData?.length > 0) && !typeTags.includes(tag)) {
+        setCurrentData((prevData) => ({
+          ...prevData,
+          [fieldName]: intialData,
+          ...intialData
+        }));
+      }
+      else if (tag == "double_row") {
+        Object.keys(intialData).forEach(item => {
           handleSelectedItem(item);
         })
       }
-    }
-  }, [intialData, fieldName]);
+      else if (tag == "gallery_form") {
+        const imagesToPatch = intialData;
+        setImages(imagesToPatch);
+        setCurrentData((prevData) => ({
+          ...prevData,
+          gallery: imagesToPatch,
+        }));
+      }
+    }, [intialData, fieldName]);
+  }
 
   const handleSelectedItem = (item) => {
     let itemData = [];
@@ -56,17 +68,24 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
   };
 
   const handleUser = (register) => {
+    if (Object.keys(intialData).length > 0) {
+      emitPatch();
+    }
     if (register) {
       let credentials = { credentials: currentData.credentials };
       if (action == "instructorRegister" || action == "ownerRegister") {
         emit(credentials, currentData);
       }
-    } else if (action == "userRegister") {
+    } else {
       emit(currentData);
     }
   }
 
-  const pickImage = async (width, height, type) => {
+  const emitPatch = ()=>{
+    return emit(currentData);
+  };
+
+  const pickImage = async (width, height, type, patchImages) => {
     let aspect;
     if (width && height) {
       aspect = [width, height];
@@ -183,6 +202,9 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                   },
                 }));
               }}
+              defaultValue={
+                (currentData[fieldName] && currentData[fieldName]["startHours"]) || ""
+              }
               placeholder="example 8:30"
               placeholderTextColor="white"
             />
@@ -201,6 +223,9 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                   },
                 }));
               }}
+              defaultValue={
+                (currentData[fieldName] && currentData[fieldName]["endHours"]) || ""
+              }
               placeholder="example 22:00"
               placeholderTextColor="white"
             />
@@ -220,6 +245,7 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                       },
                     }));
                   }}
+                  selectedValue={currentData[fieldName] && currentData[fieldName].startDays || ""}
                 >
                   {fields.days.reverse().map((day) => (
                     <Picker.Item label={day} value={day} key={day} />
@@ -239,6 +265,8 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                       },
                     }));
                   }}
+                  selectedValue={currentData[fieldName] && currentData[fieldName].endDays || ""}
+               
                 >
                   {fields.days.reverse().map((day) => (
                     <Picker.Item label={day} value={day} key={day} />
@@ -270,6 +298,9 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
                   placeholderTextColor="white"
                   keyboardType="numeric"
                   color="white"
+                  defaultValue={
+                    (currentData[fieldName] && currentData[fieldName][key]) || ""
+                  }
                   onChangeText={(value) => {
                     setCurrentData((prevData) => ({
                       ...prevData,
@@ -360,62 +391,37 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
       ) : null}
       {
         tag === "instructor_description" || tag === "gym_description" ? (
-
-          <View style={styles.form}>
-            {tag == "gym_description" ? (
-              <>
+          fields && Object.keys(fields).length > 0 ? (
+            Object.keys(fields).map((field, index) => {
+              return (
                 <TextInput
-                  placeholder={"Gym name".toLowerCase()}
+                  key={field + "_" + index}
+                  placeholder={field.toLowerCase()}
                   placeholderTextColor="white"
                   color="white"
+                  defaultValue={
+                    (currentData[fieldName] && currentData[fieldName][field]) || ""
+                  }
                   onChangeText={(value) => {
                     setCurrentData((prevData) => ({
                       ...prevData,
-                      description: {
-                        ...prevData.description,
-                        gymName: value,
+                      [fieldName]: {
+                        ...(prevData[fieldName] || {}),
+                        [field]: value,
                       },
                     }));
                   }}
                   style={styles.input}
                 />
-                <TextInput
-                  placeholder={"Address".toLowerCase()}
-                  placeholderTextColor="white"
-                  color="white"
-                  onChangeText={(value) => {
-                    setCurrentData((prevData) => ({
-                      ...prevData,
-                      description: {
-                        ...prevData.description,
-                        address: value,
-                      },
-                    }));
-                  }}
-                  style={styles.input}
-                />
-              </>
-
-            ) : null}
-
-            <TextInput
-              placeholder={"Description".toLowerCase()}
-              placeholderTextColor="white"
-              color="white"
-              onChangeText={(value) => {
-                setCurrentData((prevData) => ({
-                  ...prevData,
-                  description: {
-                    ...prevData.description,
-                    description: value,
-                  },
-                }));
-              }}
-              style={styles.input}
-            />
-          </View>
+              );
+            })
+          ) : (
+            <Text style={{ color: "white" }}>No fields available</Text>
+          )
         ) : null
       }
+
+
       {
         tag == "user_data" ? (
           <>

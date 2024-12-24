@@ -116,7 +116,7 @@ const Login = ({ setUserLogged }) => {
     if (response) {
       return response && userResponse;
     } else {
-      //logUser();
+      logUser();
       return userResponse;
     }
   }

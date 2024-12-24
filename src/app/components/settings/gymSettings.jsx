@@ -3,33 +3,32 @@ import StepFields from "../stepFields";
 import { useEffect } from 'react';
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { sportData, facilitiesData, schedulesData, pricesData, galleryData, infoForm, userData, specialtyData, gymDescription, instructorDescription } from "./../../../data/gymData";
+import { sportData, facilitiesData, schedulesData, pricesData, imagesData, infoForm, userData, specialtyData, gymDescription, instructorDescription } from "./../../../data/gymData";
 
 const GymSettings = ({ field, emit, ownerData }) => {
     const [step, setStep] = useState(0);
     const [intialData, setInitialData] = useState(new Set);
 
     const typeData = {
-        sportData,
         gymDescription,
+        sportData,
         facilitiesData,
         schedulesData,
         pricesData,
-        galleryData,
+        imagesData,
         infoForm
     }
 
     const handleStep = (direction) => {
         setStep((prevStep) => {
-            const maxSteps = Object.keys(field).length - 1;
+            const maxSteps = Object.keys(typeData).length;
             let newStep;
-
             if (direction === "next" && prevStep < maxSteps) {
                 newStep = prevStep + 1;
             } else if (direction === "back" && prevStep > 0) {
                 newStep = prevStep - 1;
             } else {
-                newStep = prevStep;
+                return;
             }
             return newStep;
         });
@@ -41,24 +40,36 @@ const GymSettings = ({ field, emit, ownerData }) => {
         if (gymKeys[step]) {
             const stepKey = gymKeys[step];
             const stepData = typeData[stepKey];
-            let gymInfo = {
-                tag: stepData.tag,
-                fields: stepData.items,
-                name: stepData.name
-            }
 
-            return gymInfo;
+            return {
+                tag: stepData.tag || "",
+                fields: stepData.items || [],
+                name: stepData.name || "",
+            };
         }
-        return {};
     };
 
+
     const intialValue = () => {
-        const patchValue = new Set(Object.keys(ownerData[getStepData().name]));
-        setInitialData([...patchValue]);
+        const stepData = getStepData();
+
+        if (!stepData || !stepData.name) return;
+        const ownerSection = ownerData[stepData.name];
+
+        if (ownerSection) {
+            const ownerKeys = Object.keys(ownerSection);
+            if (ownerKeys.length > 0) {
+                setInitialData(ownerSection);
+            }
+        }
     }
 
+
     useEffect(() => {
-        intialValue();
+        const stepData = getStepData();
+        if (stepData && stepData.name) {
+            intialValue();
+        }
     }, [step])
 
     return (
@@ -71,6 +82,8 @@ const GymSettings = ({ field, emit, ownerData }) => {
                 structure={typeData}
                 handleStep={handleStep}
                 intialData={intialData}
+                onPatch={true}
+                patchId={ownerData.id}
                 emit={emit}
             />
             <View style={styles.navigationRow}>

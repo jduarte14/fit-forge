@@ -209,6 +209,12 @@ export const galleryData = {
   items: [],
 };
 
+export const imagesData = {
+  tag: "gallery_form",
+  name: "images",
+  items: [],
+};
+
 export const avatarData = {
   tag: "avatar_form",
   name: "avatar",
@@ -217,7 +223,7 @@ export const avatarData = {
 
 export const infoForm = {
   tag: "info_form",
-  name:"info",
+  name:"credentials",
   items: {},
 };
 
@@ -244,7 +250,7 @@ export const instructorDescription = {
 
 export const gymDescription = {
   tag: "gym_description",
-  name: "description",
+  name: "credentials",
   items: {
     gymName: "",
     address: "",

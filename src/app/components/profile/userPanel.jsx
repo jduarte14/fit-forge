@@ -22,19 +22,25 @@ const userPanel = () => {
 
 
     const { user, patchUser, removeToken, getUser, ownerData } = useUser();
+    const { patchGym } = useOwner();
 
     
     const getUserInfo = async () => {
         if (user.owner) {
             await getUser(user._id);
-            setUserType(prevData => ({ ...prevData, isOwner: true }));
+            await setUserType(prevData => ({ ...prevData, isOwner: true }));
         } else if (user.instructor) {
             setUserType(prevData => ({ ...prevData, isInstructor: true }));
         }
     }
 
     const modifyUser = async (userData) => {
-        await patchUser(userData, user["_id"]);
+        await patchUser(userData);
+    }
+
+    const modifyGym = async (gymData) => {
+        const response = await patchGym(gymData, ownerData["_id"]);
+        console.log(response, "en modifyGym");
     }
 
     const typeSettings = {
@@ -160,7 +166,7 @@ const userPanel = () => {
                                     </TouchableOpacity>
                                     {userType.isOwner && modal === "gym" ? (
                                         <GymSettings
-                                            emit={modifyUser}
+                                            emit={modifyGym}
                                             field={gymInfo}
                                             tag="gymSettings"
                                             handleModal={handleModal}

@@ -19,7 +19,6 @@ export const UserProvider = ({ children }) => {
 
       const response = await handleUser("POST", formData, "/auth/user");
       if (response.status == "success") {
-        console.log("setea el user", newUser);
         setUser(response.user);
       }
       return response;
@@ -36,7 +35,7 @@ export const UserProvider = ({ children }) => {
       formData.append("email", user.email);
       formData.append("password", user.password);
       const response = await handleUser("POST", formData.toString(), "/auth/user/login", true);
-      if (response.status == "success") {
+      if (response?.status == "success") {
         setToken(response.user._id);
         
         setUser(response.user);
