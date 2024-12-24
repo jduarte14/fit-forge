@@ -37,7 +37,7 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
       }
       else if (tag == "double_row") {
         Object.keys(intialData).forEach(item => {
-          handleSelectedItem(item);
+          handleSelectedItem(item, true);
         })
       }
       else if (tag == "gallery_form") {
@@ -51,17 +51,18 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
     }, [intialData, fieldName]);
   }
 
-  const handleSelectedItem = (item) => {
+  const handleSelectedItem = (item, intialValue) => {
     let itemData = [];
     setSelectedItem((prevSelectedItem) => {
-      if (prevSelectedItem.includes(item.name)) {
+      if (prevSelectedItem.includes(item.name) && !intialValue) {
         return prevSelectedItem.filter((name) => name !== item.name);
       } else {
-        itemData = [...prevSelectedItem, item.name];
+        itemData = [...prevSelectedItem, item.name ? item.name : item];
         setCurrentData((prevData) => ({
           ...prevData,
           [fieldName]: itemData,
         }));
+
         return itemData;
       }
     });

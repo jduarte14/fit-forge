@@ -9,108 +9,106 @@ export const OwnerProvider = ({ children }) => {
 
   const createGym = async (gym, userId) => {
     try {
-    const formData = new FormData();
-    formData.append("latitude", "-3333345");
-    formData.append("longitude", "-3333345");
-    //Dinamicos
-    formData.append("name", gym.description.gymName);
-    formData.append("description", gym.description.description);
-    formData.append("shortDescription", gym.description.shortDescription || "");
-    formData.append("address", gym.description.address);
-    formData.append("userId", userId);
-    formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
-    formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);
-    for (const key in gym.prices) {
+      const formData = new FormData();
+      formData.append("latitude", "-3333345");
+      formData.append("longitude", "-3333345");
+      //Dinamicos
+      formData.append("name", gym.description.gymName);
+      formData.append("description", gym.description.description);
+      formData.append("shortDescription", gym.description.shortDescription || "");
+      formData.append("address", gym.description.address);
+      formData.append("userId", userId);
+      formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
+      formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);
+      for (const key in gym.prices) {
         if (gym.prices.hasOwnProperty(key)) {
-            formData.append(`prices[${key}]`, gym.prices[key]);
+          formData.append(`prices[${key}]`, gym.prices[key]);
         }
-    }
+      }
 
-    for (const facility of gym.facilities) {
+      for (const facility of gym.facilities) {
         formData.append(`facilities[${facility}]`, "true");
-    }
-    for (const sport of gym.sports) {
+      }
+      for (const sport of gym.sports) {
         formData.append(`sports[${sport}]`, "true");
-    }
-    gym.gallery.forEach((image, index) => {
-      formData.append("images", {
+      }
+      gym.gallery.forEach((image, index) => {
+        formData.append("images", {
           uri: image,
           type: "image/jpeg",
           name: `image_${index}.jpg`,
+        });
       });
-  });
-      
 
-     const response = await handleOwner('POST', formData, "/api/gyms");
-     if(response.status === "success") {
-      setOwner(response.gyms);
-    } else {
-      console.error(response.status, "error");
+
+      const response = await handleOwner('POST', formData, "/api/gyms");
+      if (response.status === "success") {
+        setOwner(response.gyms);
+      } else {
+        console.error(response.status, "error");
+      }
+      return response;
+
     }
-    return response;
-    
-    }
-    catch(error) {
+    catch (error) {
       console.error(error.message);
     }
   };
 
   const patchGym = async (gym, gymId) => {
     try {
-
-      console.log(gymId, "lo que va entrando");
-    const formData = new FormData();
-    formData.append("latitude", "-3333345");
-    formData.append("longitude", "-3333345");
-    //Dinamicos
-    formData.append("name", gym.description.gymName);
-    formData.append("description", gym.description.description);
-    formData.append("shortDescription", gym.description.shortDescription || "");
-    formData.append("address", gym.description.address);
-    formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
-    formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);
-    for (const key in gym.prices) {
+      const formData = new FormData();
+      formData.append("latitude", "-3333345");
+      formData.append("longitude", "-3333345");
+      //Dinamicos
+      formData.append("name", gym.description.gymName);
+      formData.append("description", gym.description.description);
+      formData.append("shortDescription", gym.description.shortDescription || "");
+      formData.append("address", gym.description.address);
+      formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
+      formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);
+      for (const key in gym.prices) {
         if (gym.prices.hasOwnProperty(key)) {
-            formData.append(`prices[${key}]`, gym.prices[key]);
+          formData.append(`prices[${key}]`, gym.prices[key]);
         }
-    }
+      }
 
-    for (const facility of gym.facilities) {
+      for (const facility of gym.facilities) {
         formData.append(`facilities[${facility}]`, "true");
-    }
-    for (const sport of gym.sports) {
+      }
+      for (const sport of gym.sports) {
         formData.append(`sports[${sport}]`, "true");
-    }
-    gym.gallery.forEach((image, index) => {
-      formData.append("images", {
+      }
+      gym.gallery.forEach((image, index) => {
+        formData.append("images", {
           uri: image,
           type: "image/jpeg",
           name: `image_${index}.jpg`,
+        });
       });
-  });
-      
 
-     const response = await handleOwner('PATCH', formData, "/api/gyms/" + gymId);
-     if(response.status === "success") {
-      setOwner(response.gyms);
-    } else {
-      console.error(response.status, "error");
+
+      const response = await handleOwner('PATCH', formData, "/api/gyms/" + gymId);
+      if (response.status === "success") {
+        setOwner(response.gyms);
+      } else {
+        console.error(response.status, "error");
+      }
+      return response;
+
     }
-    return response;
-    
-    }
-    catch(error) {
+    catch (error) {
       console.error(error.message);
     }
   };
 
-  const getGym = async =(id)=> {
+  const getGym = async = (id) => {
     try {
       const response = handleOwner('GET', null, "/api/gyms" + id);
-      if(response.status === "success") {
+      if (response.status === "success") {
         setOwner(response);
       }
-    } catch (error) { 
+    } catch (error) {
       console.error(error.message);
     }
   }
