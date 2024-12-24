@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import StepFields from "../stepFields";
 import { useEffect } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { sportData, facilitiesData, schedulesData, pricesData, imagesData, infoForm, userData, specialtyData, gymDescription, instructorDescription } from "./../../../data/gymData";
 
@@ -73,19 +73,24 @@ const GymSettings = ({ field, emit, ownerData }) => {
     }, [step])
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Manage Gym Settings</Text>
-            <StepFields
-                tag={getStepData().tag}
-                fields={getStepData().fields}
-                fieldName={getStepData().name}
-                structure={typeData}
-                handleStep={handleStep}
-                intialData={intialData}
-                onPatch={true}
-                patchId={ownerData.id}
-                emit={emit}
-            />
+        <>
+            <View style={styles.container}>
+                <Text style={styles.title}>Manage Gym Settings</Text>
+                <View style={{ height: 400 }}>
+                    <StepFields
+                        tag={getStepData().tag}
+                        fields={getStepData().fields}
+                        fieldName={getStepData().name}
+                        structure={typeData}
+                        handleStep={handleStep}
+                        intialData={intialData}
+                        onPatch={true}
+                        patchId={ownerData.id}
+                        emit={emit}
+                    />
+                </View>
+
+            </View>
             <View style={styles.navigationRow}>
                 <TouchableOpacity
                     style={styles.touchable}
@@ -104,7 +109,8 @@ const GymSettings = ({ field, emit, ownerData }) => {
                     <MaterialIcons name="navigate-next" size={45} color="white" />
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </>
+
     );
 };
 
@@ -113,10 +119,14 @@ export default GymSettings;
 
 let backgroundBase = "#1c2229";
 let backgroundSecondBase = "#2b2e37"
+
+const screenHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#1c2229",
+        height: screenHeight,
+        paddingHorizontal: 15,
     },
     title: {
         color: "white",
@@ -130,6 +140,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
+        marginBottom: 50,
+        paddingBottom: 50,
     },
     touchable: {
         backgroundColor: backgroundSecondBase,
