@@ -7,8 +7,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomBar from './../layout/BottomBar';
 import UserSettings from './../settings/userSettings';
 import GymSettings from './../settings/gymSettings';
+import InstructorSettings from "./../settings/instructorSettings";
 import { useUser } from "./../../contexts/user/UserContext";
 import { useOwner } from "./../../contexts/owner/OwnerContext";
+import { useInstructor } from "./../../contexts/instructor/InstructorContext";
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -17,14 +19,15 @@ const userPanel = () => {
     const [modal, setModal] = useState("");
     const [userData, setUserData] = useState(null);
     const [gymInfo, setGymInfo] = useState(null);
+    const [instructorInfo, setInstructorInfo] = useState(null);
     const [patchData, setPatchData] = useState({});
     const [userType, setUserType] = useState({ isOwner: false, isInstructor: false });
 
 
-    const { user, patchUser, removeToken, getUser, ownerData } = useUser();
+    const { user, patchUser, removeToken, getUser, ownerData, instructorData } = useUser();
     const { patchGym } = useOwner();
+    const { patchInstructor } = useInstructor();
 
-    
     const getUserInfo = async () => {
         if (user.owner) {
             await getUser(user._id);
@@ -40,7 +43,12 @@ const userPanel = () => {
 
     const modifyGym = async (gymData) => {
         const response = await patchGym(gymData, ownerData["_id"]);
-        console.log(response, "en modifyGym");
+        return response;
+    }
+
+    const modifyInstructor = async (data) => {
+        const response = await patchInstructor(data, instructorData["_id"])
+        return response;
     }
 
     const typeSettings = {
@@ -74,8 +82,9 @@ const userPanel = () => {
 
     const handleModal = (tag) => {
         if (tag) {
-            if (userType.isOwner && tag === "gym") {
-                setGymInfo(tag);
+            if (userType.isOwner || userType.isInstructor) {
+                if (tag == "gym") setGymInfo(tag);
+                else if (tag == "instructor") setInstructorInfo(tag);
             } else {
                 let seted = typeSettings[tag];
                 setUserData(seted);
@@ -85,10 +94,11 @@ const userPanel = () => {
             setModal("");
             setUserData(null);
             setGymInfo(null);
+            setInstructorInfo(null);
         }
     };
 
- 
+
 
     const handleSettings = (value, tag) => {
         setPatchData(prevData => {
@@ -155,6 +165,16 @@ const userPanel = () => {
                                 </TouchableOpacity>
                             </> : null
                         }
+                        {
+                            userType.isInstructor ? <>
+                                <TouchableOpacity style={styles.option} onPress={() => { handleModal("instructor") }}>
+                                    <MaterialCommunityIcons name="kettlebell" size={24} color="white" />
+                                    <Text style={styles.text}>
+                                        Manage your instructor settings
+                                    </Text>
+                                </TouchableOpacity>
+                            </> : null
+                        }
 
                     </View>
                     {
@@ -172,7 +192,17 @@ const userPanel = () => {
                                             handleModal={handleModal}
                                             ownerData={ownerData}
                                         />
-                                    ) : (
+                                    ) : userType.isInstructor && modal === "instructor" ? (
+                                        <InstructorSettings
+                                            emit={modifyInstructor}
+                                            field={instructorInfo}
+                                            tag="instructorSettings"
+                                            handleModal={handleModal}
+                                            instructorData={instructorData}
+                                            handleSettings={handleSettings}
+
+                                        />
+                                    ) : null(
                                         <UserSettings field={userData} handleSettings={handleSettings} data={patchData} />
                                     )}
                                 </View>

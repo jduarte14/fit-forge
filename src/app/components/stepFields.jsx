@@ -16,6 +16,7 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
+import { instructorDescription } from "../../data/gymData";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -86,7 +87,7 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
     return emit(currentData);
   };
 
-  const pickImage = async (width, height, type, patchImages) => {
+  const pickImage = async (width, height, type) => {
     let aspect;
     if (width && height) {
       aspect = [width, height];

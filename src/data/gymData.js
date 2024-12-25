@@ -242,7 +242,7 @@ export const userData = {
 
 export const instructorDescription = {
   tag: "instructor_description",
-  name: "description",
+  name: "credentials",
   items: {
     description: "",
   }

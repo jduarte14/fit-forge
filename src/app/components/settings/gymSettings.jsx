@@ -85,7 +85,6 @@ const GymSettings = ({ field, emit, ownerData }) => {
                         handleStep={handleStep}
                         intialData={intialData}
                         onPatch={true}
-                        patchId={ownerData.id}
                         emit={emit}
                     />
                 </View>
