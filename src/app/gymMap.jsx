@@ -1,11 +1,27 @@
 import Map from "./components/gym/map";
 import { ScrollView, Text, TouchableOpacity, View, StyleSheet, Dimensions } from "react-native";
 import { Link } from "expo-router";
+import { useOwner } from "./contexts/owner/OwnerContext";
+import { useState, useEffect } from "react";
 
 const gymMap = () => {
+    const { gyms, getGyms } = useOwner();
+    const [gymList, setGymList] = useState([]);
+
+    const getGymsInfo =()=>{
+        getGyms()
+        if(gyms) {
+            setGymList(gyms);
+        }
+    }
+
+    useEffect(()=>{
+        getGymsInfo();
+    });
+    
     return (
         <>
-            <Map />
+            <Map gyms={gyms}/>
             <View style={styles.row}>
                 <TouchableOpacity style={styles.btn} >
                     <Link href="/">

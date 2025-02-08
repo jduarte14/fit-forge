@@ -6,6 +6,7 @@ const OwnerContext = createContext();
 
 export const OwnerProvider = ({ children }) => {
   const [Owner, setOwner] = useState(null);
+  const [gyms, setGyms] = useState(null);
 
   const createGym = async (gym, userId) => {
     try {
@@ -113,8 +114,21 @@ export const OwnerProvider = ({ children }) => {
     }
   }
 
+
+  const getGyms = async = () => { 
+    try {
+      const response = handleOwner('GET', null, "/api/gyms");
+      if (response.status === "success") {
+        setGyms(response);
+        console.log(response, "gyms");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
-    <OwnerContext.Provider value={{ Owner, createGym, patchGym }}>
+    <OwnerContext.Provider value={{ Owner, gyms, createGym, patchGym, getGyms }}>
       {children}
     </OwnerContext.Provider>
   );
