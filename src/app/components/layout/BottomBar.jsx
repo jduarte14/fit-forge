@@ -25,7 +25,7 @@ const Bottombar = () => {
                 </Link>
             </TouchableOpacity>
             <TouchableOpacity>
-                <Link href="/profile" style={styles.btn}>
+                <Link href="/gymMap" style={styles.btn}>
                     <View style={styles.btn}>
                         <FontAwesome name="map-pin" size={24} color="white" />
                         <Text style={styles.text}>Gym map</Text>

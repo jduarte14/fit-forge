@@ -70,10 +70,11 @@ const StepFields = ({ fields, tag, fieldName, structure, action, handleStep, emi
   };
 
   const handleUser = (register) => {
-    if (Object.keys(intialData).length > 0) {
+    if (intialData) {
       emitPatch();
     }
     if (register) {
+      console.log("entro al if de register")
       let credentials = { credentials: currentData.credentials };
       if (action == "instructorRegister" || action == "ownerRegister") {
         emit(credentials, currentData);
