@@ -103,9 +103,9 @@ export const OwnerProvider = ({ children }) => {
     }
   };
 
-  const getGym = async = (id) => {
+  const getGym = async (id) => {
     try {
-      const response = handleOwner('GET', null, "/api/gyms" + id);
+      const response = await handleOwner('GET', null, "/api/gyms/" + id);
       if (response.status === "success") {
         setOwner(response);
       }
@@ -114,13 +114,22 @@ export const OwnerProvider = ({ children }) => {
     }
   }
 
-
-  const getGyms = async = () => { 
+  const deleteGym = async (id) => {
     try {
-      const response = handleOwner('GET', null, "/api/gyms");
+      const response = await handleOwner('DELETE', null, "/api/gyms/" + id);
+      if (response.status === "success") {
+        setOwner(response);
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  const getGyms  = async () => { 
+    try {
+      const response = await handleOwner('GET', null, "/api/gyms");
       if (response.status === "success") {
         setGyms(response);
-        console.log(response, "gyms");
       }
     } catch (error) {
       console.error(error.message);
