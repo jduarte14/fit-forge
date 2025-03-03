@@ -5,7 +5,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const GymView = ({ gym, handleModal }) => {
     const { credentials, prices, facilities, sports, images } = gym;
-    
+
     const formattedPrices = Object.fromEntries(
         Object.entries(prices).map(([key, value]) => {
             const formattedKey = key
@@ -96,10 +96,15 @@ const GymView = ({ gym, handleModal }) => {
                         </View>
                     </View>
                 </ScrollView>
-                <View>
+                <View style={ styles.buttonRow }>
                     <TouchableOpacity style={styles.button} onPress={() => handleModal(null)}>
                         <Text style={styles.buttonText}>
                             Close
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => handleModal(null)}>
+                        <Text style={styles.buttonText}>
+                            Subscribe
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -121,6 +126,13 @@ const styles = StyleSheet.create({
         backgroundColor: backgroundBase,
         height: "100%",
         width: "100%",
+    },
+    buttonRow: {
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 10,
+        justifyContent: "center"
     },
     title: {
         color: "white",
@@ -176,8 +188,8 @@ const styles = StyleSheet.create({
         borderColor: "white",
         backgroundColor: backgroundSecondBase,
         marginBottom: 10,
-        marginHorizontal: 30,
         marginTop: 10,
+        width: screenWidth / 2 - 40,
     },
     buttonText: {
         color: "white",
