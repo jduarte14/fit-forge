@@ -2,11 +2,13 @@ import { Modal, ScrollView, TouchableOpacity, Text, View, StyleSheet, Image } fr
 import { useState, useEffect } from "react";
 import { Dimensions } from "react-native";
 import { useStore } from '../../contexts/store/StoreContext';
+import Catalog from "./catalog";
 
 const StoreView = ({ store, handleModal }) => {
 
     const { getProductsByStore } = useStore();
     const [selectedStore, setSelectedStore] = useState(store);
+    const [showCatalog, setShowCatalog] = useState(false);
     const [products, setProducts] = useState([]);
 
     const getProducts = async () => {
@@ -14,6 +16,10 @@ const StoreView = ({ store, handleModal }) => {
         setProducts(data.products);
     }
 
+    const handleCatalog = () => {
+        setShowCatalog(!showCatalog);
+     }
+    
     useEffect(() => {
         getProducts();
     }, []);
@@ -76,7 +82,7 @@ const StoreView = ({ store, handleModal }) => {
                     </View>
                 </ScrollView>
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.btn} onPress={() => handleModal()}>
+                    <TouchableOpacity style={styles.btn} onPress={() => handleCatalog()}>
                         <Text style={styles.text}>
                             See catalog
                         </Text>
@@ -88,6 +94,9 @@ const StoreView = ({ store, handleModal }) => {
                     </TouchableOpacity>
                 </View>
             </View>
+            {
+                showCatalog && <Catalog products={products} handleCatalog={handleCatalog} />
+            }
         </Modal>
     )
 };
