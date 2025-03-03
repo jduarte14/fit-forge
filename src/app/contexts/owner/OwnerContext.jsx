@@ -14,10 +14,10 @@ export const OwnerProvider = ({ children }) => {
       formData.append("latitude", "-3333345");
       formData.append("longitude", "-3333345");
       //Dinamicos
-      formData.append("name", gym.description.gymName);
-      formData.append("description", gym.description.description);
-      formData.append("shortDescription", gym.description.shortDescription || "");
-      formData.append("address", gym.description.address);
+      formData.append("name", gym.credentials.gymName);
+      formData.append("description", gym.credentials.description);
+      formData.append("shortDescription", gym.credentials.shortDescription || "");
+      formData.append("address", gym.credentials.address);
       formData.append("userId", userId);
       formData.append("schedules[days]", `${gym.schedules.startDays} to ${gym.schedules.endDays}`);
       formData.append("schedules[hours]", `${gym.schedules.startHours} to ${gym.schedules.endHours}`);
