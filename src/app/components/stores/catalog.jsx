@@ -1,9 +1,16 @@
 import { View, Image, Text, ScrollView, StyleSheet, Modal, Dimensions, TextInput, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import { MaterialIcons } from "@expo/vector-icons";
+import ProductScreen from './productScreen';
 const Catalog = ({ products, handleCatalog }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredProducts, setFilteredProducts] = useState(products);
+
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const handleSelection = (product) => {
+        selectedProduct ? setSelectedProduct(null) : setSelectedProduct(product);
+    }
 
     useEffect(() => {
         const filtered = products.filter(product =>
@@ -35,7 +42,7 @@ const Catalog = ({ products, handleCatalog }) => {
                     <View style={styles.productWrapper}>
                         {filteredProducts.length > 0 ? (
                             filteredProducts.map(product => (
-                                <View style={styles.productBox} key={product._id}>
+                                <TouchableOpacity style={styles.productBox} key={product._id} onPress={() => handleSelection(product)}>
                                     <Image
                                         source={{ uri: product.images[0] }}
                                         style={styles.productImage}
@@ -44,12 +51,15 @@ const Catalog = ({ products, handleCatalog }) => {
                                         <Text style={styles.subText}>{product.name}</Text>
                                         <Text style={styles.subText}>${product.price}</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             ))
                         ) : (
                             <Text style={styles.noResults}>No products found</Text>
                         )}
                     </View>
+                    {
+                        selectedProduct && <ProductScreen product={selectedProduct} handleSelection={handleSelection} />
+                    }
                 </ScrollView>
             </View>
         </Modal>
