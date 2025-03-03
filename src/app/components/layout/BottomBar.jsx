@@ -34,7 +34,7 @@ const Bottombar = () => {
                 </Link>
             </TouchableOpacity>
             <TouchableOpacity>
-                <Link href="/profile" style={styles.btn}>
+                <Link href="/stores" style={styles.btn}>
                     <View style={styles.btn}>
                     <MaterialIcons name="local-grocery-store" size={24} color="white" />
                         <Text style={styles.text}>Stores</Text>
