@@ -1,4 +1,4 @@
-const API_URL = 'https://fitforgebackend.vercel.app';
+const API_URL = 'http://192.168.1.98:4900';
 export const handleOwner = async (method, data, params) => {
     try {
         const response = await fetch(API_URL + params, {

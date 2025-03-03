@@ -1,4 +1,4 @@
-const API_URL = 'https://fitforgebackend.vercel.app';
+const API_URL = 'http://192.168.1.98:4900/';
 
 export const handleInstructor = async (method, data, params)=>{
     try {
