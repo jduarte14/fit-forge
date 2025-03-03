@@ -63,7 +63,7 @@ const StoreView = ({ store, handleModal }) => {
 
                                 <ScrollView horizontal>
                                     {products.map((product, productIndex) => (
-                                        <View key={productIndex} style={{ marginRight: 10, marginTop: 20 }}>
+                                        <View key={productIndex} style={styles.productBox}>
 
                                             <Image
                                                 source={{ uri: product.images[0] }}
@@ -137,12 +137,26 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "left",
         marginRight: "auto",
-        marginTop: 20,
+        marginVertical: 20,
     },
     productRow: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         flexGrow: 1,
         flexShrink: 1,
+    },
+    productBox: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: backgroundSecondBase,
+        padding: 5,
+        borderWidth: 2,
+        borderColor: gray,
+        borderRadius: 15,
+        width: windowWidth / 2 - 30,
+        height: 250,
+        marginRight: 10,
     },
     row: {
         display: "flex",
@@ -159,7 +173,7 @@ const styles = StyleSheet.create({
     },
     box: {
         borderWidth: 2,
-        borderColor: "white",
+        borderColor: gray,
         backgroundColor: backgroundSecondBase,
         borderRadius: 10,
         padding: 10,
@@ -200,6 +214,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         width: 125,
         height: 175,
+        backgroundColor: "white",
     },
     btn: {
         backgroundColor: backgroundSecondBase,
