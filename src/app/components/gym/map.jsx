@@ -1,29 +1,52 @@
 import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, Text } from 'react-native';
+import { useState } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+
+import GymView from './GymView';
 
 const Map = ({ gyms }) => {
-    console.log(gyms, "todo");
+    const [selectedGym, setSelectedGym] = useState(null);
+
     const region = {
         latitude: -34.8545,
         longitude: -56.1820,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
     };
+
+    const selectGym = (gymToSelect) => {
+        setSelectedGym((prevGym) => (prevGym === gymToSelect ? null : gymToSelect));
+    };
+
     return (
         <View style={styles.container}>
             <MapView style={styles.map} initialRegion={region}>
-                <Marker
-                    coordinate={region}
-                    title="Baltasar Vargas 1113"
-                    description="Montevideo, Uruguay"
-                >
-                    <View style={styles.marker}>
-                        <Text style={styles.text}>🏋️ Gym</Text>
-                    </View>
-                </Marker>
+                {
+                    gyms && gyms.map((gym, index) => {
+                        let credentials = gym.credentials;
+                        let prices = [...Object.values(gym.prices).pop()];
+                        return (
+                                <Marker
+                                    key={`${index}_+ ${credentials.name}`}
+                                    coordinate={region}
+                                    title={credentials.name}
+                                    description={credentials.address}
+                                    onPress={() => selectGym(gym)}>
 
+                                    {/* Marker showcase of info */}
+                                    <View style={styles.marker}>
+                                        <Text style={styles.text}>{credentials.name}</Text>
+                                        <Text style={styles.text}> ${prices} </Text>
+                                    </View>
+                                </Marker>
+                        )
+                    })
+                }
             </MapView>
+            {
+                selectedGym && <GymView gym={selectedGym} handleModal={selectGym} />
+            }
         </View>
     );
 }

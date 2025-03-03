@@ -129,7 +129,8 @@ export const OwnerProvider = ({ children }) => {
     try {
       const response = await handleOwner('GET', null, "/api/gyms");
       if (response.status === "success") {
-        setGyms(response);
+        setGyms(response.gyms);
+        return response.gyms;
       }
     } catch (error) {
       console.error(error.message);

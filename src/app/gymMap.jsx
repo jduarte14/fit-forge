@@ -8,16 +8,16 @@ const gymMap = () => {
     const { gyms, getGyms } = useOwner();
     const [gymList, setGymList] = useState([]);
 
-    const getGymsInfo =()=>{
-        getGyms()
-        if(gyms) {
-            setGymList(gyms);
+    const getGymsInfo = async ()=>{
+        const response = await getGyms();
+        if(response) {
+            setGymList(response);
         }
     }
 
     useEffect(()=>{
         getGymsInfo();
-    });
+    }, []);
     
     return (
         <>

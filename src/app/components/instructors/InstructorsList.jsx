@@ -22,10 +22,8 @@ const InstructorsList = () => {
     };
 
     const handleSelectedInstructor = (instructor) => {
-        console.log(" se llama")
         setSelectedInstructor(instructor);
         handleModal();
-        console.log(selectedInstructor, instructor);
     }
 
     const handleModal = () => {
